@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs'); // Library untuk simpan file
 
 // GANTI INI dengan URL website target
-const TARGET_URL = 'https://www.website-aslinya.com/harga-emas';
+const TARGET_URL = 'https://galeri24.co.id/harga-emas';
 const OUTPUT_FILE = 'harga-emas.json'; // Nama file untuk simpan hasil
 
 /**
