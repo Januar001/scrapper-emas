@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs'); // Library untuk simpan file
 
 // GANTI INI dengan URL website target
-const TARGET_URL = 'https://galeri24.co.id/harga-emas';
+const TARGET_URL = 'https://www.website-aslinya.com/harga-emas';
 const OUTPUT_FILE = 'harga-emas.json'; // Nama file untuk simpan hasil
 
 /**
@@ -35,9 +35,14 @@ async function ambilHargaEmas() {
       });
     });
 
+    // <-- TAMBAHAN 1: Buat stempel waktu saat ini (waktu server GitHub Actions)
+    // .toISOString() adalah format waktu standar internasional (UTC)
+    const waktuScraping = new Date().toISOString();
+
     const result = {
       sumber: 'GALERI 24',
-      diperbarui: lastUpdate,
+      diperbarui: lastUpdate, // Ini waktu dari website Galeri 24
+      waktu_scraping: waktuScraping, // <-- TAMBAHAN 2: Masukkan stempel waktu
       daftar_harga: prices,
     };
     return result;
