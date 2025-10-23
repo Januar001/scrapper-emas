@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kredit Emas Mudah & Cepat - Galeri24</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* --- BAGIAN BARU: HERO (MODIFIKASI) --- */
+        .hero-section {
+            background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+            color: white;
+            padding: 40px 20px;
+        }
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .hero-text {
+            flex-basis: 55%;
+        }
+        .hero-image {
+            flex-basis: 40%;
+            text-align: center;
+        }
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .hero-section h1 {
+            font-size: 2.8em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: 300;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #3f51b5;
+            padding: 14px 28px;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .cta-button:hover {
+            background-color: #f4f6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        .cta-button.secondary {
+            background-color: #3f51b5;
+            color: white;
+        }
+        .cta-button.secondary:hover {
+            background-color: #303f9f;
+        }
+
+        /* --- BAGIAN BARU: GALERI PRODUK --- */
+        .gallery-section {
+            padding: 50px 20px;
+            background-color: #ffffff;
+            text-align: center;
+        }
+        .gallery-section h2 {
+            font-size: 2.2em;
+            color: #1a237e;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .product-card {
+            flex-basis: 500px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eef;
+            overflow: hidden;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #f4f6ff;
+        }
+        .product-card-content {
+            padding: 20px;
+        }
+        .product-card-content h3 {
+            font-size: 1.4em;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .product-card-content p {
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #555;
+            margin-bottom: 0;
+        }
+
+
+        /* --- STYLE UNTUK WIDGET DATA (MODIFIKASI DARI .harga-container) --- */
+        .data-widget {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 25px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eef;
+            overflow: hidden;
+        }
+        .data-widget h2 {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            color: #1a237e;
+        }
+
+        /* --- STYLE KONTROL CHART (DIAMBIL DARI ASLINYA) --- */
+        .chart-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .chart-controls div {
+            display: flex;
+            border-radius: 6px;
+            background-color: #f4f6ff;
+            padding: 4px;
+        }
+        .chart-controls button {
+            border: none;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            font-weight: 600;
+            background-color: transparent;
+            color: #555;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chart-controls button.active {
+            background-color: #3f51b5;
+            color: white;
+            box-shadow: 0 2px 5px rgba(63, 81, 181, 0.3);
+        }
+        .chart-controls button:not(.active):hover {
+            background-color: #e8eaf6;
+        }
+        .harga-chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        
+        /* --- STYLE INFO & TABEL HARGA (DIAMBIL DARI ASLINYA) --- */
+        .harga-info {
+            text-align: center;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 25px;
+            background-color: #f4f6ff;
+            padding: 10px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+        .harga-tabel { width: 100%; border-collapse: collapse; }
+        .harga-tabel th, .harga-tabel td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #eceff1; }
+        .harga-tabel th { background-color: #3f51b5; color: white; font-size: 1em; }
+        .harga-tabel tr:nth-child(even) { background-color: #f9f9fd; }
+        .harga-tabel tr:hover { background-color: #f0f2ff; }
+        .harga-tabel td:first-child { font-weight: 600; color: #333; }
+        .harga-loading { text-align: center; color: #777; font-style: italic; padding: 20px; }
+
+
+        /* --- BAGIAN BARU: FOOTER CTA --- */
+        .footer-cta {
+            background-color: #f4f6ff;
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 40px;
+        }
+        .footer-cta h2 {
+            font-size: 2em;
+            color: #1a237e;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .footer-cta p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #333;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- MEDIA QUERY (RESPONSIVE) --- */
+        @media (max-width: 768px) {
+            .hero-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-image {
+                margin-top: 20px;
+            }
+            .hero-section h1 {
+                font-size: 2.2em;
+            }
+            .hero-section p {
+                font-size: 1.1em;
+            }
+            .gallery-section h2 {
+                font-size: 1.8em;
+            }
+            .data-widget {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .chart-controls { flex-direction: column; }
+            .harga-tabel thead { display: none; }
+            .harga-tabel tr { display: block; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #eef; overflow: hidden; }
+            .harga-tabel td { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; text-align: right; }
+            .harga-tabel td:last-child { border-bottom: 0; }
+            .harga-tabel td:first-child { font-weight: bold; background-color: #f9f9fd; }
+            .harga-tabel td::before { content: attr(data-label); font-weight: 600; text-align: left; padding-right: 15px; color: #333; }
+            .harga-chart-container { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>Wujudkan Emas Impian Anda Sekarang</h1>
+                <p>Miliki emas batangan atau perhiasan idaman Anda dengan program kredit emas dari Galeri24. Proses mudah, aman, dan transparan.</p>
+                <a href="#gallery" class="cta-button">Lihat Pilihan Produk</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://placehold.co/450x300/E8C765/FFFFFF?text=Kredit+Emas+Impian" alt="Kredit Emas Batangan">
+            </div>
+        </div>
+    </div>
+
+    <div id="gallery" class="gallery-section">
+        <h2>Produk yang Bisa Anda Kredit</h2>
+        <div class="gallery-container">
+            
+            <div class="product-card">
+                <img src="https://placehold.co/300x200/F0E68C/333333?text=Emas+Batangan" alt="Emas Batangan">
+                <div class="product-card-content">
+                    <h3>Emas Batangan (Logam Mulia)</h3>
+                    <p>Investasi murni. Tersedia dalam berbagai ukuran, mulai dari 1 gram hingga 100 gram. Sertifikat resmi.</p>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <img src="https://placehold.co/300x200/D4AF37/FFFFFF?text=Perhiasan+Emas" alt="Perhiasan Emas">
+                <div class="product-card-content">
+                    <h3>Perhiasan Mewah</h3>
+                    <p>Tampil elegan dengan koleksi kalung, cincin, dan gelang emas terbaru. Pilihan desain eksklusif menanti Anda.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-widget">
+        <h2>Pantau Harga Emas Live (Hari Ini)</h2>
+        <div class="harga-info">
+            <span id="harga-diperbarui">Memuat data terbaru...</span>
+            <br>
+            <small id="waktu-scraping" style="font-weight: normal;"></small>
+        </div>
+        <table class="harga-tabel">
+            <thead>
+                <tr>
+                    <th>Berat (gram)</th>
+                    <th>Harga Jual</th>
+                    <th>Harga Buyback</th>
+                </tr>
+            </thead>
+            <tbody id="harga-tbody">
+                <tr>
+                    <td colspan="3" class="harga-loading">Sedang mengambil data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="data-widget">
+        <h2>Gunakan Tren Harga Untuk Kredit Terbaik</h2>
+        <div class="chart-controls">
+            <div class="tab-buttons">
+                <button class="active" data-type="jual">Harga Jual</button>
+                <button data-type="buyback">Harga Beli</button>
+            </div>
+            <div class="filter-buttons">
+                <button data-days="7">7 Hari</button>
+                <button class="active" data-days="30">30 Hari</button>
+                <button data-days="all">Semua</button>
+            </div>
+        </div>
+        <div class="harga-chart-container">
+            <canvas id="harga-chart"></canvas>
+        </div>
+    </div>
+
+    <div id="kontak" class="footer-cta">
+        <h2>Siap Mengajukan Kredit Emas Anda?</h2>
+        <p>Jangan tunda lagi. Miliki emas impian Anda dengan proses yang cepat dan angsuran ringan. Hubungi kami untuk konsultasi gratis!</p>
+        <a href="#daftar" class="cta-button secondary">Ajukan Kredit Sekarang</a>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // --- URL API KAMU ---
+            const LATEST_API_URL = "https://januar001.github.io/scrapper-emas/harga-emas.json";
+            const HISTORY_API_URL = "https://januar001.github.io/scrapper-emas/histori.json";
+            const cacheBuster = '?v=' + new Date().getTime();
+
+            // --- Variabel Global untuk Chart ---
+            let myChart = null; // Ini akan menyimpan objek chart
+            let fullHistoriData = []; // Ini akan menyimpan semua data histori
+            
+            // --- Definisi Warna ---
+            const jualConfig = {
+                label: 'Harga Jual 1 Gram (Rp)',
+                borderColor: '#3f51b5',
+                backgroundColor: 'rgba(63, 81, 181, 0.1)'
+            };
+            const buybackConfig = {
+                label: 'Harga Buyback 1 Gram (Rp)',
+                borderColor: '#d81b60',
+                backgroundColor: 'rgba(216, 27, 96, 0.1)'
+            };
+
+
+            /**
+             * FUNGSI UTAMA UNTUK MENG-UPDATE ATAU MEMBUAT CHART
+             */
+            function updateChart() {
+                if (!myChart) return; // Jangan lakukan apa-apa jika chart belum siap
+
+                // 1. Dapatkan status tombol yang aktif
+                const activeTab = document.querySelector('.tab-buttons .active').dataset.type;
+                const activeFilter = document.querySelector('.filter-buttons .active').dataset.days;
+
+                // 2. Filter data berdasarkan waktu
+                let filteredData = fullHistoriData;
+                if (activeFilter !== 'all') {
+                    filteredData = fullHistoriData.slice(-parseInt(activeFilter));
+                }
+
+                // 3. Siapkan data untuk chart
+                const labels = filteredData.map(item => {
+                    const date = new Date(item.tanggal);
+                    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                });
+                
+                const dataPoints = filteredData.map(item => {
+                    if (activeTab === 'jual') {
+                        return item.harga_jual || item.harga; // 'item.harga' untuk jaga-jaga data lama
+                    } else {
+                        return item.harga_buyback || 0; // '0' jika data buyback belum ada
+                    }
+                });
+
+                // 4. Pilih config warna & label
+                const config = (activeTab === 'jual') ? jualConfig : buybackConfig;
+
+                // 5. Update data chart
+                myChart.data.labels = labels;
+                myChart.data.datasets[0].label = config.label;
+                myChart.data.datasets[0].data = dataPoints;
+                myChart.data.datasets[0].borderColor = config.borderColor;
+                myChart.data.datasets[0].backgroundColor = config.backgroundColor;
+                
+                // 6. Animasikan perubahan
+                myChart.update();
+            }
+
+            /**
+             * FUNGSI UNTUK MEMBUAT CHART PERTAMA KALI
+             */
+            function initChart(historiData) {
+                fullHistoriData = historiData; // Simpan data utuh
+                const ctx = document.getElementById('harga-chart').getContext('2d');
+                
+                myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [], // Awalnya kosong
+                        datasets: [{
+                            label: '', // Awalnya kosong
+                            data: [], // Awalnya kosong
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 800 },
+                        scales: { y: { ticks: { callback: value => 'Rp ' + new Intl.NumberFormat('id-ID').format(value) } } },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed.y !== null) {
+                                            label += 'Rp ' + new Intl.NumberFormat('id-ID').format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Langsung update chart dengan data default (Jual, 30 Hari)
+                updateChart();
+            }
+
+            /**
+             * FUNGSI UNTUK MENGISI TABEL (SAMA)
+             */
+            function fetchTableData() {
+                const elTbody = document.getElementById("harga-tbody");
+                const elUpdate = document.getElementById("harga-diperbarui");
+                const elScrapeTime = document.getElementById("waktu-scraping");
+                
+                fetch(LATEST_API_URL + cacheBuster)
+                    .then(response => response.json())
+                    .then(data => {
+                        elUpdate.innerText = data.diperbarui;
+                        try {
+                            const scrapeDate = new Date(data.waktu_scraping);
+                            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' };
+                            elScrapeTime.innerText = `(Data diambil: ${scrapeDate.toLocaleString('id-ID', options)} WIB)`;
+                        } catch (e) {}
+
+                        elTbody.innerHTML = "";
+                        let htmlRows = "";
+                        data.daftar_harga.forEach(item => {
+                            htmlRows += `
+                                <tr>
+                                    <td data-label="Berat (gram)">${item.berat}</td>
+                                    <td data-label="Harga Jual">${item.harga_jual}</td>
+                                    <td data-label="Harga Buyback">${item.harga_buyback}</td>
+                                </tr>
+                            `;
+                        });
+                        elTbody.innerHTML = htmlRows;
+                    })
+                    .catch(error => {
+                        console.error("Error mengambil data tabel:", error);
+                        elUpdate.innerText = "Gagal memuat data tabel.";
+                    });
+            }
+
+            /**
+             * FUNGSI UNTUK MENGAMBIL DATA CHART (MODIFIKASI)
+             */
+            function fetchChartData() {
+                fetch(HISTORY_API_URL + cacheBuster)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            initChart(data); // Panggil fungsi initChart, bukan renderChart
+                        } else {
+                            document.querySelector('.harga-chart-container').style.display = 'none';
+                            document.querySelector('.chart-controls').style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error mengambil data histori:", error);
+                        document.querySelector('.harga-chart-container').style.display = 'none';
+                        document.querySelector('.chart-controls').style.display = 'none';
+                    });
+            }
+            
+            /**
+             * FUNGSI UNTUK MENG-HANDLE KLIK TOMBOL
+             */
+            function setupControls() {
+                document.querySelector('.chart-controls').addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'BUTTON') return; // Abaikan jika klik bukan tombol
+
+                    const parent = e.target.parentElement;
+
+                    // Hapus .active dari semua tombol di grupnya
+                    parent.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                    
+                    // Tambahkan .active ke tombol yang diklik
+                    e.target.classList.add('active');
+
+                    // Update chart
+                    updateChart();
+                });
+            }
+
+            // --- JALANKAN SEMUA ---
+            fetchTableData();
+            fetchChartData();
+            setupControls();
+
+        });
+    </script>
+</body>
+</html>
