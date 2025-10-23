@@ -1,0 +1,284 @@
+<style>
+    .harga-container {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        max-width: 700px;
+        margin: 20px auto;
+        padding: 25px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #eef;
+        overflow: hidden; /* Rapikan container */
+    }
+    .harga-container h2 {
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: #1a237e;
+    }
+    .harga-info {
+        text-align: center;
+        font-size: 0.95em;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 25px;
+        background-color: #f4f6ff;
+        padding: 10px;
+        border-radius: 8px;
+        line-height: 1.5;
+    }
+    .harga-tabel { 
+        width: 100%; 
+        border-collapse: collapse; 
+    }
+    .harga-tabel th,
+    .harga-tabel td { 
+        padding: 14px 16px; 
+        text-align: left; 
+        border-bottom: 1px solid #eceff1; 
+    }
+    .harga-tabel th { 
+        background-color: #3f51b5; 
+        color: white; 
+        font-size: 1em; 
+    }
+    .harga-tabel tr:nth-child(even) { 
+        background-color: #f9f9fd; 
+    }
+    .harga-tabel tr:hover { 
+        background-color: #f0f2ff; 
+        transition: background-color 0.2s ease; 
+    }
+    .harga-tabel td:first-child { 
+        font-weight: 600; 
+        color: #333; 
+    }
+    .harga-loading { 
+        text-align: center; 
+        color: #777; 
+        font-style: italic; 
+        padding: 20px; 
+    }
+    
+    /* --- CSS UNTUK CHART --- */
+    .harga-chart-container {
+        position: relative;
+        height: 300px; /* Atur tinggi chart */
+        width: 100%;
+        margin-top: 15px;
+        margin-bottom: 30px;
+    }
+
+    /* --- CSS UNTUK MOBILE RESPONSIVE --- */
+    @media (max-width: 600px) {
+        .harga-container {
+            padding: 15px; /* Kurangi padding di HP */
+        }
+        .harga-tabel thead { 
+            display: none; /* Sembunyikan header tabel */
+        }
+        .harga-tabel tr { 
+            display: block; 
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            border: 1px solid #eef; 
+            overflow: hidden; 
+        }
+        .harga-tabel td { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px 15px; 
+            border-bottom: 1px solid #f0f0f0; 
+            text-align: right; 
+        }
+        .harga-tabel td:last-child { 
+            border-bottom: 0; 
+        }
+        .harga-tabel td:first-child { 
+            font-weight: bold; 
+            background-color: #f9f9fd; 
+        }
+        .harga-tabel td::before { 
+            content: attr(data-label); /* Tampilkan label dari 'data-label' */
+            font-weight: 600; 
+            text-align: left; 
+            padding-right: 15px; 
+            color: #333; 
+        }
+        .harga-chart-container {
+             height: 250px; /* Buat chart sedikit lebih pendek di HP */
+        }
+    }
+</style>
+
+<div class="harga-container">
+    
+    <h2>Histori Harga (1 Gram)</h2>
+    <div class="harga-chart-container">
+        <canvas id="harga-chart"></canvas>
+    </div>
+
+    <h2>Harga Emas Galeri 24 (Hari Ini)</h2>
+    <div class="harga-info">
+        <span id="harga-diperbarui">Memuat data terbaru...</span>
+        <br>
+        <small id="waktu-scraping" style="font-weight: normal;"></small>
+    </div>
+    <table class="harga-tabel">
+        <thead>
+            <tr>
+                <th>Berat (gram)</th>
+                <th>Harga Jual</th>
+                <th>Harga Buyback</th>
+            </tr>
+        </thead>
+        <tbody id="harga-tbody">
+            <tr>
+                <td colspan="3" class="harga-loading">Sedang mengambil data...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // --- URL API KAMU ---
+        // Pastikan ini adalah URL repository-mu
+        const LATEST_API_URL = "https://januar001.github.io/scrapper-emas/harga-emas.json";
+        const HISTORY_API_URL = "https://januar001.github.io/scrapper-emas/histori.json";
+        
+        // Trik agar data selalu baru (anti-cache)
+        const cacheBuster = '?v=' + new Date().getTime();
+
+        /**
+         * FUNGSI UNTUK MENGGAMBAR CHART
+         */
+        function renderChart(historiData) {
+            const ctx = document.getElementById('harga-chart').getContext('2d');
+            
+            // Siapkan data untuk chart
+            const labels = historiData.map(item => {
+                const date = new Date(item.tanggal);
+                return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+            });
+            const dataPoints = historiData.map(item => item.harga);
+
+            new Chart(ctx, {
+                type: 'line', // Tipe chart: garis
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Harga Jual 1 Gram (Rp)',
+                        data: dataPoints,
+                        borderColor: '#3f51b5',
+                        backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                        fill: true,
+                        tension: 0.1 // Membuat garis sedikit melengkung
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    // Animasi sudah AKTIF secara default di Chart.js
+                    animation: {
+                        duration: 1000 // Durasi animasi 1 detik
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) {
+                                        label += 'Rp ' + new Intl.NumberFormat('id-ID').format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * FUNGSI UNTUK MENGISI TABEL HARGA TERBARU
+         */
+        function fetchTableData() {
+            const elTbody = document.getElementById("harga-tbody");
+            const elUpdate = document.getElementById("harga-diperbarui");
+            const elScrapeTime = document.getElementById("waktu-scraping");
+            
+            fetch(LATEST_API_URL + cacheBuster)
+                .then(response => response.json())
+                .then(data => {
+                    elUpdate.innerText = data.diperbarui;
+                    try {
+                        const scrapeDate = new Date(data.waktu_scraping);
+                        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' };
+                        elScrapeTime.innerText = `(Data diambil: ${scrapeDate.toLocaleString('id-ID', options)} WIB)`;
+                    } catch (e) {}
+
+                    elTbody.innerHTML = "";
+                    let htmlRows = "";
+                    data.daftar_harga.forEach(item => {
+                        htmlRows += `
+                            <tr>
+                                <td data-label="Berat (gram)">${item.berat}</td>
+                                <td data-label="Harga Jual">${item.harga_jual}</td>
+                                <td data-label="Harga Buyback">${item.harga_buyback}</td>
+                            </tr>
+                        `;
+                    });
+                    elTbody.innerHTML = htmlRows;
+                })
+                .catch(error => {
+                    console.error("Error mengambil data tabel:", error);
+                    elUpdate.innerText = "Gagal memuat data tabel.";
+                    elTbody.innerHTML = `<tr><td colspan="3" class="harga-loading" style="color: red;">Gagal memuat data tabel.</td></tr>`;
+                });
+        }
+
+        /**
+         * FUNGSI UNTUK MENGAMBIL DATA CHART
+         */
+        function fetchChartData() {
+            fetch(HISTORY_API_URL + cacheBuster)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        // Hanya tampilkan 30 data terakhir (1 bulan)
+                        const last30Days = data.slice(-30);
+                        renderChart(last30Days);
+                    } else {
+                        // Sembunyikan chart jika tidak ada data
+                        document.querySelector('.harga-chart-container').style.display = 'none'; 
+                    }
+                })
+                .catch(error => {
+                    console.error("Error mengambil data histori:", error);
+                    // Sembunyikan chart jika error
+                    document.querySelector('.harga-chart-container').style.display = 'none'; 
+                });
+        }
+
+        // --- JALANKAN KEDUA FUNGSI ---
+        fetchTableData();
+        fetchChartData();
+
+    });
+</script>
