@@ -8,13 +8,57 @@
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         border: 1px solid #eef;
-        overflow: hidden; /* Rapikan container */
+        overflow: hidden;
     }
     .harga-container h2 {
         text-align: center;
         margin-top: 10px;
         margin-bottom: 10px;
         color: #1a237e;
+    }
+    
+    /* --- STYLE BARU UNTUK KONTROL CHART --- */
+    .chart-controls {
+        display: flex;
+        flex-wrap: wrap; /* Biar rapi di HP */
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        gap: 10px; /* Jarak antar grup tombol */
+    }
+    .chart-controls div {
+        display: flex;
+        border-radius: 6px;
+        background-color: #f4f6ff;
+        padding: 4px;
+    }
+    .chart-controls button {
+        border: none;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        font-weight: 600;
+        background-color: transparent;
+        color: #555;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .chart-controls button.active {
+        background-color: #3f51b5;
+        color: white;
+        box-shadow: 0 2px 5px rgba(63, 81, 181, 0.3);
+    }
+    .chart-controls button:not(.active):hover {
+        background-color: #e8eaf6;
+    }
+    /* ------------------------------------- */
+
+    .harga-chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+        margin-top: 15px;
+        margin-bottom: 30px;
     }
     .harga-info {
         text-align: center;
@@ -27,95 +71,43 @@
         border-radius: 8px;
         line-height: 1.5;
     }
-    .harga-tabel { 
-        width: 100%; 
-        border-collapse: collapse; 
-    }
-    .harga-tabel th,
-    .harga-tabel td { 
-        padding: 14px 16px; 
-        text-align: left; 
-        border-bottom: 1px solid #eceff1; 
-    }
-    .harga-tabel th { 
-        background-color: #3f51b5; 
-        color: white; 
-        font-size: 1em; 
-    }
-    .harga-tabel tr:nth-child(even) { 
-        background-color: #f9f9fd; 
-    }
-    .harga-tabel tr:hover { 
-        background-color: #f0f2ff; 
-        transition: background-color 0.2s ease; 
-    }
-    .harga-tabel td:first-child { 
-        font-weight: 600; 
-        color: #333; 
-    }
-    .harga-loading { 
-        text-align: center; 
-        color: #777; 
-        font-style: italic; 
-        padding: 20px; 
-    }
-    
-    /* --- CSS UNTUK CHART --- */
-    .harga-chart-container {
-        position: relative;
-        height: 300px; /* Atur tinggi chart */
-        width: 100%;
-        margin-top: 15px;
-        margin-bottom: 30px;
-    }
+    .harga-tabel { width: 100%; border-collapse: collapse; }
+    .harga-tabel th, .harga-tabel td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #eceff1; }
+    .harga-tabel th { background-color: #3f51b5; color: white; font-size: 1em; }
+    .harga-tabel tr:nth-child(even) { background-color: #f9f9fd; }
+    .harga-tabel tr:hover { background-color: #f0f2ff; }
+    .harga-tabel td:first-child { font-weight: 600; color: #333; }
+    .harga-loading { text-align: center; color: #777; font-style: italic; padding: 20px; }
 
-    /* --- CSS UNTUK MOBILE RESPONSIVE --- */
     @media (max-width: 600px) {
-        .harga-container {
-            padding: 15px; /* Kurangi padding di HP */
-        }
-        .harga-tabel thead { 
-            display: none; /* Sembunyikan header tabel */
-        }
-        .harga-tabel tr { 
-            display: block; 
-            margin-bottom: 15px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            border: 1px solid #eef; 
-            overflow: hidden; 
-        }
-        .harga-tabel td { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 12px 15px; 
-            border-bottom: 1px solid #f0f0f0; 
-            text-align: right; 
-        }
-        .harga-tabel td:last-child { 
-            border-bottom: 0; 
-        }
-        .harga-tabel td:first-child { 
-            font-weight: bold; 
-            background-color: #f9f9fd; 
-        }
-        .harga-tabel td::before { 
-            content: attr(data-label); /* Tampilkan label dari 'data-label' */
-            font-weight: 600; 
-            text-align: left; 
-            padding-right: 15px; 
-            color: #333; 
-        }
-        .harga-chart-container {
-             height: 250px; /* Buat chart sedikit lebih pendek di HP */
-        }
+        .harga-container { padding: 15px; }
+        .chart-controls { flex-direction: column; } /* Tumpuk kontrol di HP */
+        .harga-tabel thead { display: none; }
+        .harga-tabel tr { display: block; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #eef; overflow: hidden; }
+        .harga-tabel td { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; text-align: right; }
+        .harga-tabel td:last-child { border-bottom: 0; }
+        .harga-tabel td:first-child { font-weight: bold; background-color: #f9f9fd; }
+        .harga-tabel td::before { content: attr(data-label); font-weight: 600; text-align: left; padding-right: 15px; color: #333; }
+        .harga-chart-container { height: 250px; }
     }
 </style>
 
 <div class="harga-container">
     
     <h2>Histori Harga (1 Gram)</h2>
+
+    <div class="chart-controls">
+        <div class="tab-buttons">
+            <button class="active" data-type="jual">Harga Jual</button>
+            <button data-type="buyback">Harga Beli</button>
+        </div>
+        <div class="filter-buttons">
+            <button data-days="7">7 Hari</button>
+            <button class="active" data-days="30">30 Hari</button>
+            <button data-days="all">Semua</button>
+        </div>
+    </div>
+    
     <div class="harga-chart-container">
         <canvas id="harga-chart"></canvas>
     </div>
@@ -148,55 +140,94 @@
     document.addEventListener("DOMContentLoaded", function() {
         
         // --- URL API KAMU ---
-        // Pastikan ini adalah URL repository-mu
         const LATEST_API_URL = "https://januar001.github.io/scrapper-emas/harga-emas.json";
         const HISTORY_API_URL = "https://januar001.github.io/scrapper-emas/histori.json";
-        
-        // Trik agar data selalu baru (anti-cache)
         const cacheBuster = '?v=' + new Date().getTime();
 
+        // --- Variabel Global untuk Chart ---
+        let myChart = null; // Ini akan menyimpan objek chart
+        let fullHistoriData = []; // Ini akan menyimpan semua data histori
+        
+        // --- Definisi Warna ---
+        const jualConfig = {
+            label: 'Harga Jual 1 Gram (Rp)',
+            borderColor: '#3f51b5',
+            backgroundColor: 'rgba(63, 81, 181, 0.1)'
+        };
+        const buybackConfig = {
+            label: 'Harga Buyback 1 Gram (Rp)',
+            borderColor: '#d81b60',
+            backgroundColor: 'rgba(216, 27, 96, 0.1)'
+        };
+
+
         /**
-         * FUNGSI UNTUK MENGGAMBAR CHART
+         * FUNGSI UTAMA UNTUK MENG-UPDATE ATAU MEMBUAT CHART
          */
-        function renderChart(historiData) {
-            const ctx = document.getElementById('harga-chart').getContext('2d');
-            
-            // Siapkan data untuk chart
-            const labels = historiData.map(item => {
+        function updateChart() {
+            if (!myChart) return; // Jangan lakukan apa-apa jika chart belum siap
+
+            // 1. Dapatkan status tombol yang aktif
+            const activeTab = document.querySelector('.tab-buttons .active').dataset.type;
+            const activeFilter = document.querySelector('.filter-buttons .active').dataset.days;
+
+            // 2. Filter data berdasarkan waktu
+            let filteredData = fullHistoriData;
+            if (activeFilter !== 'all') {
+                filteredData = fullHistoriData.slice(-parseInt(activeFilter));
+            }
+
+            // 3. Siapkan data untuk chart
+            const labels = filteredData.map(item => {
                 const date = new Date(item.tanggal);
                 return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
             });
-            const dataPoints = historiData.map(item => item.harga);
+            
+            const dataPoints = filteredData.map(item => {
+                if (activeTab === 'jual') {
+                    return item.harga_jual || item.harga; // 'item.harga' untuk jaga-jaga data lama
+                } else {
+                    return item.harga_buyback || 0; // '0' jika data buyback belum ada
+                }
+            });
 
-            new Chart(ctx, {
-                type: 'line', // Tipe chart: garis
+            // 4. Pilih config warna & label
+            const config = (activeTab === 'jual') ? jualConfig : buybackConfig;
+
+            // 5. Update data chart
+            myChart.data.labels = labels;
+            myChart.data.datasets[0].label = config.label;
+            myChart.data.datasets[0].data = dataPoints;
+            myChart.data.datasets[0].borderColor = config.borderColor;
+            myChart.data.datasets[0].backgroundColor = config.backgroundColor;
+            
+            // 6. Animasikan perubahan
+            myChart.update();
+        }
+
+        /**
+         * FUNGSI UNTUK MEMBUAT CHART PERTAMA KALI
+         */
+        function initChart(historiData) {
+            fullHistoriData = historiData; // Simpan data utuh
+            const ctx = document.getElementById('harga-chart').getContext('2d');
+            
+            myChart = new Chart(ctx, {
+                type: 'line',
                 data: {
-                    labels: labels,
+                    labels: [], // Awalnya kosong
                     datasets: [{
-                        label: 'Harga Jual 1 Gram (Rp)',
-                        data: dataPoints,
-                        borderColor: '#3f51b5',
-                        backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                        label: '', // Awalnya kosong
+                        data: [], // Awalnya kosong
                         fill: true,
-                        tension: 0.1 // Membuat garis sedikit melengkung
+                        tension: 0.1
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    // Animasi sudah AKTIF secara default di Chart.js
-                    animation: {
-                        duration: 1000 // Durasi animasi 1 detik
-                    },
-                    scales: {
-                        y: {
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
-                                }
-                            }
-                        }
-                    },
+                    animation: { duration: 800 },
+                    scales: { y: { ticks: { callback: value => 'Rp ' + new Intl.NumberFormat('id-ID').format(value) } } },
                     plugins: {
                         tooltip: {
                             callbacks: {
@@ -213,10 +244,13 @@
                     }
                 }
             });
+
+            // Langsung update chart dengan data default (Jual, 30 Hari)
+            updateChart();
         }
 
         /**
-         * FUNGSI UNTUK MENGISI TABEL HARGA TERBARU
+         * FUNGSI UNTUK MENGISI TABEL (SAMA)
          */
         function fetchTableData() {
             const elTbody = document.getElementById("harga-tbody");
@@ -249,36 +283,54 @@
                 .catch(error => {
                     console.error("Error mengambil data tabel:", error);
                     elUpdate.innerText = "Gagal memuat data tabel.";
-                    elTbody.innerHTML = `<tr><td colspan="3" class="harga-loading" style="color: red;">Gagal memuat data tabel.</td></tr>`;
                 });
         }
 
         /**
-         * FUNGSI UNTUK MENGAMBIL DATA CHART
+         * FUNGSI UNTUK MENGAMBIL DATA CHART (MODIFIKASI)
          */
         function fetchChartData() {
             fetch(HISTORY_API_URL + cacheBuster)
                 .then(response => response.json())
                 .then(data => {
                     if (data && data.length > 0) {
-                        // Hanya tampilkan 30 data terakhir (1 bulan)
-                        const last30Days = data.slice(-30);
-                        renderChart(last30Days);
+                        initChart(data); // Panggil fungsi initChart, bukan renderChart
                     } else {
-                        // Sembunyikan chart jika tidak ada data
-                        document.querySelector('.harga-chart-container').style.display = 'none'; 
+                        document.querySelector('.harga-chart-container').style.display = 'none';
+                        document.querySelector('.chart-controls').style.display = 'none';
                     }
                 })
                 .catch(error => {
                     console.error("Error mengambil data histori:", error);
-                    // Sembunyikan chart jika error
-                    document.querySelector('.harga-chart-container').style.display = 'none'; 
+                    document.querySelector('.harga-chart-container').style.display = 'none';
+                    document.querySelector('.chart-controls').style.display = 'none';
                 });
         }
+        
+        /**
+         * FUNGSI UNTUK MENG-HANDLE KLIK TOMBOL
+         */
+        function setupControls() {
+            document.querySelector('.chart-controls').addEventListener('click', function(e) {
+                if (e.target.tagName !== 'BUTTON') return; // Abaikan jika klik bukan tombol
 
-        // --- JALANKAN KEDUA FUNGSI ---
+                const parent = e.target.parentElement;
+
+                // Hapus .active dari semua tombol di grupnya
+                parent.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                
+                // Tambahkan .active ke tombol yang diklik
+                e.target.classList.add('active');
+
+                // Update chart
+                updateChart();
+            });
+        }
+
+        // --- JALANKAN SEMUA ---
         fetchTableData();
         fetchChartData();
+        setupControls();
 
     });
 </script>

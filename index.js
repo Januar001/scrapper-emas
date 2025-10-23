@@ -10,6 +10,7 @@ const HISTORY_FILE = 'histori.json';   // File untuk data chart
 
 /**
  * Fungsi untuk mengambil data harga dari website.
+ * (Tidak ada perubahan di fungsi ini)
  */
 async function ambilHargaEmas() {
   try {
@@ -19,12 +20,11 @@ async function ambilHargaEmas() {
     const $ = cheerio.load(html);
     const prices = [];
 
-    // Selector dari HTML snippet awalmu
     const lastUpdate = $('#GALERI\\ 24 .text-lg.font-semibold.mb-4').text().trim();
     const rows = $('#GALERI\\ 24 .min-w-\\[400px\\] > div.grid.grid-cols-5');
 
     rows.each((index, element) => {
-      if (index === 0) return; // Lewati header
+      if (index === 0) return; 
       const columns = $(element).find('div');
       const weight = $(columns[0]).text().trim();
       const sellPrice = $(columns[1]).text().trim();
@@ -53,14 +53,13 @@ async function ambilHargaEmas() {
 }
 
 /**
- * Fungsi untuk membaca histori, menambah data baru (jika beda hari),
- * dan menyimpannya kembali.
+ * --- MODIFIKASI BESAR DI FUNGSI INI ---
+ * Sekarang menyimpan harga_jual dan harga_buyback
  */
 function updateHistori(dataHarga) {
   console.log('🔄 Memperbarui histori...');
   let histori = [];
 
-  // 1. Baca file histori yang sudah ada (jika ada)
   if (fs.existsSync(HISTORY_FILE)) {
     try {
       const dataLama = fs.readFileSync(HISTORY_FILE, 'utf8');
@@ -71,52 +70,46 @@ function updateHistori(dataHarga) {
     }
   }
 
-  // 2. Ambil data penting dari scrape terbaru
-  //    Kita ambil harga 1 gram (indeks ke-1 di array, setelah 0.5gr) sebagai patokan
-  const harga_1_gram = dataHarga.daftar_harga[1].harga_jual;
-  const hargaNumerik = parseInt(harga_1_gram.replace(/[^0-9]/g, ''));
+  // 2. Ambil data penting dari scrape terbaru (item 1 gram)
+  const item_1_gram = dataHarga.daftar_harga[1]; // [0] = 0.5g, [1] = 1g
   
-  // Dapatkan tanggal hari ini (format YYYY-MM-DD) dari waktu scraping (UTC)
+  // Ubah "Rp1.234.000" menjadi 1234000
+  const hargaJual = parseInt(item_1_gram.harga_jual.replace(/[^0-9]/g, ''));
+  const hargaBuyback = parseInt(item_1_gram.harga_buyback.replace(/[^0-9]/g, ''));
+  
   const tanggalHariIni = dataHarga.waktu_scraping.split('T')[0];
   
-  // 3. Cek apakah data untuk hari ini sudah ada
   const dataHariIniSudahAda = histori.some(entry => entry.tanggal === tanggalHariIni);
 
-  if (!dataHariIniSudahAda) {
-    // 4. Jika belum ada, tambahkan data baru
+  if (!dataHariIniSudahAda && hargaJual > 0 && hargaBuyback > 0) {
+    // 4. Tambahkan data baru dengan format baru
     histori.push({
       tanggal: tanggalHariIni,
-      harga: hargaNumerik
+      harga_jual: hargaJual,
+      harga_buyback: hargaBuyback
     });
     
-    // 5. Simpan kembali ke file
     fs.writeFileSync(HISTORY_FILE, JSON.stringify(histori, null, 2));
-    console.log(`✅ Data histori baru untuk ${tanggalHariIni} telah ditambahkan.`);
+    console.log(`✅ Data histori baru (jual & buyback) untuk ${tanggalHariIni} telah ditambahkan.`);
   } else {
-    console.log(`ℹ️ Data histori untuk ${tanggalHariIni} sudah ada, tidak perlu update.`);
+    console.log(`ℹ️ Data histori untuk ${tanggalHariIni} sudah ada atau data harga 0, tidak perlu update.`);
   }
 }
 
 /**
- * Fungsi utama yang akan dijalankan
+ * Fungsi utama (Tidak ada perubahan)
  */
 async function jalankanDanSimpan() {
   const dataHarga = await ambilHargaEmas();
 
-  // Pastikan dataHarga ada DAN daftar_harga tidak kosong
   if (dataHarga && dataHarga.daftar_harga && dataHarga.daftar_harga.length > 1) {
-    
-    // 1. Simpan data TERBARU (untuk tabel)
     fs.writeFileSync(LATEST_FILE, JSON.stringify(dataHarga, null, 2));
     console.log(`✅ Data terbaru berhasil disimpan ke ${LATEST_FILE}`);
-    
-    // 2. Update file HISTORI (untuk chart)
     updateHistori(dataHarga);
-
   } else {
     console.log('Gagal mengambil data atau data harga kosong, file tidak diupdate.');
   }
 }
 
-// Langsung panggil fungsi utamanya
+// Jalankan
 jalankanDanSimpan();
