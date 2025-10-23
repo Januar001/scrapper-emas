@@ -10,7 +10,6 @@ const HISTORY_FILE = 'histori.json';   // File untuk data chart
 
 /**
  * Fungsi untuk mengambil data harga dari website.
- * (Tidak ada perubahan di fungsi ini)
  */
 async function ambilHargaEmas() {
   try {
@@ -53,8 +52,7 @@ async function ambilHargaEmas() {
 }
 
 /**
- * --- MODIFIKASI BESAR DI FUNGSI INI ---
- * Sekarang menyimpan harga_jual dan harga_buyback
+ * Fungsi untuk update histori (Format Baru)
  */
 function updateHistori(dataHarga) {
   console.log('🔄 Memperbarui histori...');
@@ -70,7 +68,7 @@ function updateHistori(dataHarga) {
     }
   }
 
-  // 2. Ambil data penting dari scrape terbaru (item 1 gram)
+  // Ambil data penting dari scrape terbaru (item 1 gram)
   const item_1_gram = dataHarga.daftar_harga[1]; // [0] = 0.5g, [1] = 1g
   
   // Ubah "Rp1.234.000" menjadi 1234000
@@ -81,8 +79,10 @@ function updateHistori(dataHarga) {
   
   const dataHariIniSudahAda = histori.some(entry => entry.tanggal === tanggalHariIni);
 
+  // Cek juga apakah harganya valid (bukan 0)
   if (!dataHariIniSudahAda && hargaJual > 0 && hargaBuyback > 0) {
-    // 4. Tambahkan data baru dengan format baru
+    
+    // INI BAGIAN KUNCINYA: Menyimpan harga_jual dan harga_buyback
     histori.push({
       tanggal: tanggalHariIni,
       harga_jual: hargaJual,
@@ -97,15 +97,19 @@ function updateHistori(dataHarga) {
 }
 
 /**
- * Fungsi utama (Tidak ada perubahan)
+ * Fungsi utama
  */
 async function jalankanDanSimpan() {
   const dataHarga = await ambilHargaEmas();
 
+  // Pastikan data ada dan punya lebih dari 1 item (0.5g dan 1g)
   if (dataHarga && dataHarga.daftar_harga && dataHarga.daftar_harga.length > 1) {
     fs.writeFileSync(LATEST_FILE, JSON.stringify(dataHarga, null, 2));
     console.log(`✅ Data terbaru berhasil disimpan ke ${LATEST_FILE}`);
+    
+    // Panggil fungsi update histori
     updateHistori(dataHarga);
+
   } else {
     console.log('Gagal mengambil data atau data harga kosong, file tidak diupdate.');
   }

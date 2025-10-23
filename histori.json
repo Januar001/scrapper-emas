@@ -1,6 +1,7 @@
 [
   {
     "tanggal": "2025-10-23",
-    "harga": 2429000
+    "harga_jual": 2429000,
+    "harga_buyback": 2270000
   }
 ]
