@@ -1,45 +1,34 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
-const fs = require('fs'); // Library untuk simpan file
+const fs = require('fs');
 
-// URL target (sudah diganti ke URL asli)
+// --- KONFIGURASI ---
 const TARGET_URL = 'https://galeri24.co.id/harga-emas';
-const OUTPUT_FILE = 'harga-emas.json'; // Nama file untuk simpan hasil
+const LATEST_FILE = 'harga-emas.json'; // File untuk data terakhir (tabel)
+const HISTORY_FILE = 'histori.json';   // File untuk data chart
+// ---------------------
 
 /**
- * Fungsi untuk mengambil data dan mengembalikannya.
+ * Fungsi untuk mengambil data harga dari website.
  */
 async function ambilHargaEmas() {
   try {
     console.log('🔄 Sedang mengambil data harga emas...');
-    
-    // 1. Ambil data HTML dari website
     const response = await axios.get(TARGET_URL);
     const html = response.data;
-    
-    // 2. Muat HTML ke Cheerio
     const $ = cheerio.load(html);
     const prices = [];
 
-    // 3. Ambil data "Diperbarui"
-    //    (Selector ini dari HTML snippet awalmu)
+    // Selector dari HTML snippet awalmu
     const lastUpdate = $('#GALERI\\ 24 .text-lg.font-semibold.mb-4').text().trim();
-
-    // 4. Ambil semua baris data harga
-    //    (Selector ini dari HTML snippet awalmu)
     const rows = $('#GALERI\\ 24 .min-w-\\[400px\\] > div.grid.grid-cols-5');
 
-    // 5. Looping (ulangi) untuk setiap baris
     rows.each((index, element) => {
-      // Lewati baris pertama (header)
-      if (index === 0) return; 
-      
+      if (index === 0) return; // Lewati header
       const columns = $(element).find('div');
-      
       const weight = $(columns[0]).text().trim();
       const sellPrice = $(columns[1]).text().trim();
       const buybackPrice = $(columns[2]).text().trim();
-      
       prices.push({
         berat: weight,
         harga_jual: sellPrice,
@@ -47,36 +36,85 @@ async function ambilHargaEmas() {
       });
     });
 
-    // 6. Buat stempel waktu (timestamp) saat ini
     const waktuScraping = new Date().toISOString();
 
-    // 7. Gabungkan semua data
     const result = {
       sumber: 'GALERI 24',
-      diperbarui: lastUpdate, // Waktu update dari website
-      waktu_scraping: waktuScraping, // Waktu server kita mengambil data
+      diperbarui: lastUpdate,
+      waktu_scraping: waktuScraping,
       daftar_harga: prices,
     };
     return result;
 
   } catch (error) {
-    console.error('❌ Terjadi kesalahan:', error.message);
+    console.error('❌ Terjadi kesalahan saat scraping:', error.message);
     return null;
   }
 }
 
 /**
- * Fungsi utama yang akan dijalankan oleh GitHub Actions
+ * Fungsi untuk membaca histori, menambah data baru (jika beda hari),
+ * dan menyimpannya kembali.
+ */
+function updateHistori(dataHarga) {
+  console.log('🔄 Memperbarui histori...');
+  let histori = [];
+
+  // 1. Baca file histori yang sudah ada (jika ada)
+  if (fs.existsSync(HISTORY_FILE)) {
+    try {
+      const dataLama = fs.readFileSync(HISTORY_FILE, 'utf8');
+      histori = JSON.parse(dataLama);
+    } catch (e) {
+      console.error('Gagal membaca histori.json, membuat file baru.');
+      histori = [];
+    }
+  }
+
+  // 2. Ambil data penting dari scrape terbaru
+  //    Kita ambil harga 1 gram (indeks ke-1 di array, setelah 0.5gr) sebagai patokan
+  const harga_1_gram = dataHarga.daftar_harga[1].harga_jual;
+  const hargaNumerik = parseInt(harga_1_gram.replace(/[^0-9]/g, ''));
+  
+  // Dapatkan tanggal hari ini (format YYYY-MM-DD) dari waktu scraping (UTC)
+  const tanggalHariIni = dataHarga.waktu_scraping.split('T')[0];
+  
+  // 3. Cek apakah data untuk hari ini sudah ada
+  const dataHariIniSudahAda = histori.some(entry => entry.tanggal === tanggalHariIni);
+
+  if (!dataHariIniSudahAda) {
+    // 4. Jika belum ada, tambahkan data baru
+    histori.push({
+      tanggal: tanggalHariIni,
+      harga: hargaNumerik
+    });
+    
+    // 5. Simpan kembali ke file
+    fs.writeFileSync(HISTORY_FILE, JSON.stringify(histori, null, 2));
+    console.log(`✅ Data histori baru untuk ${tanggalHariIni} telah ditambahkan.`);
+  } else {
+    console.log(`ℹ️ Data histori untuk ${tanggalHariIni} sudah ada, tidak perlu update.`);
+  }
+}
+
+/**
+ * Fungsi utama yang akan dijalankan
  */
 async function jalankanDanSimpan() {
   const dataHarga = await ambilHargaEmas();
 
-  if (dataHarga) {
-    // 8. Simpan data ke file JSON
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(dataHarga, null, 2));
-    console.log(`✅ Data berhasil disimpan ke ${OUTPUT_FILE}`);
+  // Pastikan dataHarga ada DAN daftar_harga tidak kosong
+  if (dataHarga && dataHarga.daftar_harga && dataHarga.daftar_harga.length > 1) {
+    
+    // 1. Simpan data TERBARU (untuk tabel)
+    fs.writeFileSync(LATEST_FILE, JSON.stringify(dataHarga, null, 2));
+    console.log(`✅ Data terbaru berhasil disimpan ke ${LATEST_FILE}`);
+    
+    // 2. Update file HISTORI (untuk chart)
+    updateHistori(dataHarga);
+
   } else {
-    console.log('Gagal mengambil data, file tidak diupdate.');
+    console.log('Gagal mengambil data atau data harga kosong, file tidak diupdate.');
   }
 }
 

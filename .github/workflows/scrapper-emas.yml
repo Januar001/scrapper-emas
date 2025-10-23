@@ -6,23 +6,27 @@ on:
   schedule:
     - cron: '0 * * * *'
   
-  # 2. Tambahkan ini agar kamu bisa run manual dari tab Actions
+  # 2. Agar kamu bisa run manual dari tab Actions
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest # Menggunakan server Linux dari GitHub
 
+    # 3. Beri izin 'write' agar bot bisa commit ke repo
+    permissions:
+      contents: write
+
     steps:
-      # 1. "Check out" atau ambil kodemu dari repo
+      # 1. Ambil kodemu dari repo
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js di server
+      # 2. Setup Node.js di server (versi 20)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Pakai Node.js versi 18
+          node-version: '20' 
 
       # 3. Install semua library (axios, cheerio)
       - name: Install dependencies
@@ -32,12 +36,13 @@ jobs:
       - name: Run scraper
         run: node index.js
 
-      # 5. Commit file harga-emas.json yang baru
+      # 5. Commit file harga-emas.json DAN histori.json yang baru
       - name: Commit files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'Update harga emas otomatis'
-          file_pattern: 'harga-emas.json' # Hanya commit file ini
+          # PENTING: simpan kedua file
+          file_pattern: 'harga-emas.json histori.json' 
           commit_user_name: 'GitHub Actions Bot'
           commit_user_email: 'actions@github.com'
           commit_author: 'GitHub Actions Bot <actions@github.com>'
