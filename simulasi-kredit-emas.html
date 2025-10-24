@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simulasi Kredit Emas (Flat)</title>
+  <style>
+    :root {
+      --blue: #003bb1;
+      --bg: #f4f7fa;
+      --muted: #666;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      margin: 0;
+    }
+
+    #simulasiKreditEmas {
+      background: var(--bg);
+      margin: 0;
+      color: #111;
+      padding: 1px 0;
+    }
+
+    #simulasiKreditEmas header {
+      background: var(--blue);
+      color: #fff;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #simulasiKreditEmas header h1 {
+      font-size: 20px;
+      margin: 0;
+      color: #fff;
+      padding: 0;
+      border: 0;
+    }
+
+    #simulasiKreditEmas .container {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    #simulasiKreditEmas .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    #simulasiKreditEmas .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+    }
+
+    #simulasiKreditEmas .form-group {
+      margin-bottom: 14px;
+    }
+
+    #simulasiKreditEmas .form-group-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    #simulasiKreditEmas .form-group-row>div:first-child {
+      flex: 3;
+    }
+
+    #simulasiKreditEmas .form-group-row>div:last-child {
+      flex: 1;
+    }
+
+    #simulasiKreditEmas label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    #simulasiKreditEmas select,
+    #simulasiKreditEmas input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    #simulasiKreditEmas input:disabled {
+      background: #f9f9f9;
+      color: #555;
+    }
+
+    #simulasiKreditEmas .button-group {
+      margin-top: 20px;
+      display: flex;
+      gap: 8px;
+    }
+
+    #simulasiKreditEmas button {
+      background: var(--blue);
+      color: #fff;
+      border: 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      flex: 1;
+    }
+
+    #simulasiKreditEmas button.reset {
+      background: #eef2ff;
+      color: var(--blue);
+      flex: 0.5;
+    }
+
+    #simulasiKreditEmas button.add {
+      width: 100%;
+      background: #1a9c40;
+    }
+
+    #simulasiKreditEmas #sim-keranjangList ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #simulasiKreditEmas #sim-keranjangList li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed #eee;
+      font-size: 14px;
+    }
+
+    #simulasiKreditEmas #sim-keranjangList li:last-child {
+      border-bottom: 0;
+    }
+
+    #simulasiKreditEmas #sim-keranjangList .remove-item {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      max-width: 24px;
+      min-height: 24px;
+      max-height: 24px;
+      padding: 0 !important;
+      border: none !important;
+      box-sizing: border-box !important;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      background: #e0e0e0;
+      color: #222;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    #simulasiKreditEmas #sim-totalKeranjang {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 2px solid var(--blue);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--blue);
+    }
+
+    #simulasiKreditEmas .result-hero {
+      background: #eef2ff;
+      border: 1px solid #cddcff;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    #simulasiKreditEmas .result-hero.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    #simulasiKreditEmas .result-hero.primary .label {
+      color: #cddcff;
+    }
+
+    #simulasiKreditEmas .result-hero.primary .val-hero {
+      color: #fff;
+    }
+
+    #simulasiKreditEmas .result-hero .label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    #simulasiKreditEmas .result-hero .val-hero {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    #simulasiKreditEmas .details-heading {
+      font-size: 16px;
+      color: #333;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 6px;
+    }
+
+    #simulasiKreditEmas .result-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    #simulasiKreditEmas .item {
+      background: #f8f9ff;
+      border: 1px solid #eef2ff;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    #simulasiKreditEmas .item .label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #simulasiKreditEmas .item .val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    #simulasiKreditEmas .btn-whatsapp {
+      display: block;
+      background: #25D366;
+      color: #fff !important;
+      padding: 14px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      text-align: center;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+
+    #simulasiKreditEmas .btn-whatsapp:hover {
+      background: #128C7E;
+      color: #fff !important;
+    }
+
+    #simulasiKreditEmas .table-wrapper {
+      overflow-x: auto;
+      margin-top: 16px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+    }
+
+    #simulasiKreditEmas table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    #simulasiKreditEmas th,
+    #simulasiKreditEmas td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    #simulasiKreditEmas th {
+      background: #f8f9ff;
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    #simulasiKreditEmas tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    #simulasiKreditEmas .small-note {
+      font-size: 13px;
+      color: #777;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    @media(min-width: 500px) {
+      #simulasiKreditEmas .result-details-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    @media(min-width: 768px) {
+      #simulasiKreditEmas .grid {
+        grid-template-columns: 380px 1fr;
+      }
+
+      #simulasiKreditEmas button {
+        flex: none;
+      }
+
+      #simulasiKreditEmas button.reset {
+        flex: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="simulasiKreditEmas">
+
+    <header>
+      <div style="font-weight:700;font-size:22px;">🏦</div>
+      <h1>Simulasi Kredit Emas (Flat Rate)</h1>
+    </header>
+
+    <div class="container">
+      <div class="grid">
+        <div class="card">
+          <div class="form-group">
+            <label>Jenis Produk</label>
+            <select id="sim-jenis">
+              <option value="batangan">Emas Batangan (DP 20%)</option>
+              <option value="perhiasan">Emas Perhiasan (DP 25%)</option>
+            </select>
+          </div>
+
+          <fieldset style="border:1px solid #ddd; border-radius:8px; padding:10px 14px;">
+            <legend style="font-size:13px; font-weight:500; color:var(--muted); padding:0 4px;">Pilih Kepingan Emas
+            </legend>
+            <div class="form-group-row">
+              <div>
+                <label>Berat</label>
+                <select id="sim-pilihBerat"></select>
+              </div>
+              <div>
+                <label>Keping</label>
+                <input id="sim-pilihKeping" type="number" value="1" min="1">
+              </div>
+            </div>
+            <button id="sim-tambahBtn" class="add">+ Tambah</button>
+          </fieldset>
+
+          <h4 style="margin-top:16px; margin-bottom:8px;">Keranjang Emas</h4>
+          <div id="sim-keranjangList">
+            <div class="small-note">Keranjang masih kosong.</div>
+          </div>
+          <div id="sim-totalKeranjang">Total Harga: Rp0</div>
+
+          <div class="form-group" style="margin-top:14px;">
+            <label>Tenor (bulan)</label>
+            <select id="sim-tenor"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Admin/Provisi</label>
+            <input type="text" value="1.5% dari plafon" readonly disabled>
+          </div>
+
+          <div class="button-group">
+            <button id="sim-calcBtn">Hitung Simulasi</button>
+            <button class="reset" id="sim-resetBtn">Reset</button>
+          </div>
+
+          <div class="small-note">Data harga diambil langsung dari <a
+              href="https://januar001.github.io/scrapper-emas/harga-emas.json" target="_blank">GALERI 24</a>.
+            <br>Perhitungan bunga flat: (Pokok + bunga total) ÷ tenor.</div>
+        </div>
+
+        <div class="card">
+          <h3>Hasil Simulasi</h3>
+
+          <div class="result-hero primary">
+            <div class="label">Estimasi Angsuran / Bulan</div>
+            <div id="sim-outCicilan" class="val-hero">-</div>
+          </div>
+
+          <div class="result-hero">
+            <div class="label">Total Bayar Awal (DP + Admin)</div>
+            <div id="sim-outTotalBayar" class="val-hero">-</div>
+          </div>
+
+          <h4 class="details-heading">Rincian Perhitungan</h4>
+          <div class="result-details-grid">
+            <div class="item">
+              <div class="label">Harga Jual</div>
+              <div id="sim-outHarga" class="val">-</div>
+            </div>
+            <div class="item">
+              <div class="label">Tenor</div>
+              <div id="sim-outTenor" class="val">-</div>
+            </div>
+            <div class="item">
+              <div class="label">DP</div>
+              <div id="sim-outDP" class="val">-</div>
+            </div>
+            <div class="item">
+              <div class="label">Plafon (Harga-DP)</div>
+              <div id="sim-outPlafon" class="val">-</div>
+            </div>
+            <div class="item">
+              <div class="label">Admin (1.5%)</div>
+              <div id="sim-outAdmin" class="val">-</div>
+            </div>
+            <div class="item">
+              <div class="label">Bunga Berlaku</div>
+              <div id="sim-outBunga" class="val">-</div>
+            </div>
+            <div class="item" hidden>
+              <div class="label">Total Bunga</div>
+              <div id="sim-outTotalBunga" class="val">-</div>
+            </div>
+          </div>
+
+          <a href="#" id="sim-ajukanWA" class="btn-whatsapp" target="_blank" style="display:none; margin-top: 20px;">
+            Ajukan Kredit Sekarang
+          </a>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <h3>Daftar Harga Emas GALERI 24</h3>
+        <div class="table-wrapper">
+          <table id="sim-tabelHarga">
+            <thead>
+              <tr>
+                <th>Berat (gr)</th>
+                <th>Harga Jual</th>
+                <th>Harga Buyback</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const url = "https://januar001.github.io/scrapper-emas/harga-emas.json";
+
+      const tenorSel = document.getElementById('sim-tenor');
+      const tabelBody = document.querySelector('#sim-tabelHarga tbody');
+      const pilihBeratSel = document.getElementById('sim-pilihBerat');
+      const keranjangListDiv = document.getElementById('sim-keranjangList');
+      const totalKeranjangDiv = document.getElementById('sim-totalKeranjang');
+      const pilihKepingInput = document.getElementById('sim-pilihKeping');
+      const jenisSel = document.getElementById('sim-jenis');
+      const waBtn = document.getElementById('sim-ajukanWA');
+
+      // Output Elements
+      const outHarga = document.getElementById('sim-outHarga');
+      const outDP = document.getElementById('sim-outDP');
+      const outPlafon = document.getElementById('sim-outPlafon');
+      const outAdmin = document.getElementById('sim-outAdmin');
+      const outBunga = document.getElementById('sim-outBunga');
+      const outCicilan = document.getElementById('sim-outCicilan');
+      const outTotalBunga = document.getElementById('sim-outTotalBunga');
+      const outTotalBayar = document.getElementById('sim-outTotalBayar');
+      // === ELEMEN BARU UNTUK TENOR ===
+      const outTenor = document.getElementById('sim-outTenor');
+      // =================================
+
+      let masterHarga = {};
+      let keranjang = [];
+      let totalHargaKeranjang = 0;
+
+      if (tenorSel && tenorSel.options.length === 0) {
+        for (let i = 1; i <= 60; i++) {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = i + " bulan";
+          tenorSel.appendChild(opt);
+        }
+      }
+
+      function parseRp(s) { return Number(String(s).replace(/[^0-9]/g, "")); }
+      function formatRp(n) { return 'Rp' + Math.round(n).toLocaleString('id-ID'); }
+
+      if (Object.keys(masterHarga).length === 0) {
+        fetch(url)
+          .then(res => res.json())
+          .then(data => {
+            if (!data.daftar_harga) return;
+
+            data.daftar_harga.forEach(item => {
+              const beratStr = item.berat + ' gr';
+              const harga = parseRp(item.harga_jual);
+
+              masterHarga[beratStr] = harga;
+
+              const opt = document.createElement('option');
+              opt.value = beratStr;
+              opt.textContent = `${beratStr} — ${item.harga_jual}`;
+              if (pilihBeratSel) pilihBeratSel.appendChild(opt);
+
+              const tr = document.createElement('tr');
+              tr.innerHTML = `<td>${item.berat} gr</td><td>${item.harga_jual}</td><td>${item.harga_buyback}</td>`;
+              if (tabelBody) tabelBody.appendChild(tr);
+            });
+          })
+          .catch(err => {
+            console.error("Gagal mengambil data harga emas:", err);
+            if (keranjangListDiv) keranjangListDiv.innerHTML = `<div class="small-note" style="color:red;">Gagal mengambil data harga.</div>`;
+          });
+      }
+
+      function renderKeranjang() {
+        if (!keranjangListDiv) return;
+
+        keranjangListDiv.innerHTML = '';
+        totalHargaKeranjang = 0;
+
+        if (keranjang.length === 0) {
+          keranjangListDiv.innerHTML = '<div class="small-note">Keranjang masih kosong.</div>';
+          totalKeranjangDiv.textContent = 'Total Harga: Rp0';
+          return;
+        }
+
+        const ul = document.createElement('ul');
+        keranjang.forEach((item, index) => {
+          const li = document.createElement('li');
+          const subtotal = item.harga * item.keping;
+          totalHargaKeranjang += subtotal;
+
+          li.innerHTML = `
+        <span>
+          <strong>${item.berat}</strong> x ${item.keping} keping
+          <br>
+          <span class="small-note">${formatRp(subtotal)}</span>
+        </span>
+        <button class="remove-item" data-index="${index}" title="Hapus item">&times;</button>
+      `;
+          ul.appendChild(li);
+        });
+
+        keranjangListDiv.appendChild(ul);
+        totalKeranjangDiv.textContent = 'Total Harga: ' + formatRp(totalHargaKeranjang);
+      }
+
+      document.getElementById('sim-tambahBtn').onclick = () => {
+        const berat = pilihBeratSel.value;
+        const keping = parseInt(pilihKepingInput.value);
+        const harga = masterHarga[berat];
+
+        if (!harga || keping < 1) return;
+
+        const existingItem = keranjang.find(item => item.berat === berat);
+        if (existingItem) {
+          existingItem.keping += keping;
+        } else {
+          keranjang.push({ berat, keping, harga });
+        }
+
+        renderKeranjang();
+        pilihKepingInput.value = 1;
+      };
+
+      keranjangListDiv.onclick = (e) => {
+        if (e.target.classList.contains('remove-item')) {
+          const index = parseInt(e.target.dataset.index);
+          keranjang.splice(index, 1);
+          renderKeranjang();
+        }
+      };
+
+      function hitung() {
+        const harga = totalHargaKeranjang;
+
+        if (harga === 0) {
+          alert("Keranjang Emas masih kosong. Silakan tambahkan item terlebih dahulu.");
+          return;
+        }
+
+        const jenis = jenisSel.value;
+        const tenor = parseInt(tenorSel.value);
+
+        const promo = 0.0095; // 0.9%
+        const long = 0.012; // 1.2%
+
+        const dpPersen = (jenis === "batangan") ? 0.20 : 0.25;
+        const rate = (tenor <= 36) ? promo : long;
+
+        const dp = harga * dpPersen;
+        const plafon = harga - dp;
+        const admin = plafon * 0.015;
+        const totalBunga = plafon * rate * tenor;
+
+        const totalPokokBunga = plafon + totalBunga;
+        const cicilan = totalPokokBunga / tenor;
+
+        const totalBayar = dp + admin;
+
+        // Tampilkan hasil
+        outHarga.textContent = formatRp(harga);
+        // === TAMPILKAN TENOR DI SINI ===
+        outTenor.textContent = tenor + " bulan";
+        // ===============================
+        outDP.textContent = formatRp(dp);
+        outPlafon.textContent = formatRp(plafon);
+        outAdmin.textContent = formatRp(admin);
+        outBunga.textContent = (rate * 100).toFixed(2) + "%/bln";
+        outTotalBunga.textContent = formatRp(totalBunga);
+        outCicilan.textContent = formatRp(cicilan);
+        outTotalBayar.textContent = formatRp(totalBayar);
+
+        // !!! GANTI DENGAN NOMOR ANDA (format 62, tanpa + atau 0) !!!
+        const nomorWA = '62895336782517';
+
+        let rincianBarang = '';
+        if (keranjang.length > 0) {
+          keranjang.forEach(item => {
+            rincianBarang += `\n- ${item.berat} (${item.keping} keping)`;
+          });
+        } else {
+          rincianBarang = '\n- (Keranjang kosong)';
+        }
+
+        const templatePesan = `
+Halo, saya tertarik untuk mengajukan kredit emas dengan rincian sbb:
+
+*Barang:* ${rincianBarang.trim()}
+
+*--- Rincian Simulasi ---*
+*Total Harga:* ${outHarga.textContent}
+*Tenor:* ${tenor} bulan
+*DP:* ${outDP.textContent}
+*Plafon:* ${outPlafon.textContent}
+*Admin (1.5%):* ${outAdmin.textContent}
+*Bunga Berlaku:* ${outBunga.textContent}
+
+*--- Rincian Pembayaran ---*
+*Total Bayar Awal (DP + Admin):* ${outTotalBayar.textContent}
+*Angsuran per Bulan:* ${outCicilan.textContent}
+
+Mohon informasi lebih lanjut untuk proses pengajuan. Terima kasih.
+    `;
+
+        const urlWA = `https://wa.me/${nomorWA}?text=${encodeURIComponent(templatePesan.trim())}`;
+
+        waBtn.href = urlWA;
+        waBtn.style.display = 'block';
+      }
+
+      document.getElementById('sim-calcBtn').onclick = hitung;
+
+      document.getElementById('sim-resetBtn').onclick = () => {
+        keranjang = [];
+        renderKeranjang();
+
+        // Reset manual output
+        outHarga.textContent = '-';
+        outDP.textContent = '-';
+        outPlafon.textContent = '-';
+        outAdmin.textContent = '-';
+        outBunga.textContent = '-';
+        outTotalBunga.textContent = '-';
+        // === RESET TENOR JUGA ===
+        outTenor.textContent = '-';
+        // ==========================
+        outCicilan.textContent = '-';
+        outTotalBayar.textContent = '-';
+
+        waBtn.style.display = 'none';
+        waBtn.href = '#';
+
+        jenisSel.value = 'batangan';
+        tenorSel.value = '1';
+      };
+
+    }); 
+  </script>
+
+</body>
+
+</html>
