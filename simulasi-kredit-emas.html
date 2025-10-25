@@ -1,343 +1,382 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Simulasi Kredit Emas (Flat)</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulasi Kredit Emas</title>
+  
+  <!-- Import Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --blue: #003bb1;
-      --bg: #f4f7fa;
-      --muted: #666;
-    }
+  :root {
+    --blue: #003bb1;
+    --bg: #f4f7fa; 
+    --muted: #666;
+  }
+  * {
+    box-sizing: border-box; 
+  }
+  body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    background: var(--bg); /* Moved background to body */
+  }
+ 
+  #simulasiKreditEmas {
+    /* background: var(--bg); */ /* Removed redundant background */
+    margin: 0;
+    color: #111;
+    padding: 1px 0 24px 0; /* Added bottom padding */
+  }
+  #simulasiKreditEmas header {
+    background: var(--blue);
+    color: #fff;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  #simulasiKreditEmas header h1 { 
+    font-size: 20px; 
+    margin: 0; 
+    color: #fff;
+    padding: 0;
+    border: 0;
+  }
+  #simulasiKreditEmas .container { 
+    max-width: 1100px; 
+    margin: 24px auto; 
+    padding: 0 16px; 
+  }
+ 
+  #simulasiKreditEmas .grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 18px; 
+  }
+ 
+  #simulasiKreditEmas .card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    padding: 20px;
+  }
+ 
+  #simulasiKreditEmas .form-group {
+    margin-bottom: 14px;
+  }
+ 
+  #simulasiKreditEmas .form-group-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  #simulasiKreditEmas .form-group-row > div:first-child { flex: 3; }
+  #simulasiKreditEmas .form-group-row > div:last-child { flex: 1; }
+ 
+  #simulasiKreditEmas label { 
+    display:block; 
+    font-size:13px; 
+    color:var(--muted); 
+    margin-bottom: 6px; 
+    font-weight: 500;
+  }
+ 
+  #simulasiKreditEmas select, 
+  #simulasiKreditEmas input { 
+    width:100%; 
+    padding:10px; 
+    border:1px solid #ddd; 
+    border-radius:8px; 
+    font-size:14px; 
+    background: #fff;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; /* Ensure font consistency */
+  }
+ 
+  #simulasiKreditEmas input:disabled {
+    background: #f9f9f9;
+    color: #555;
+  }
+ 
+  #simulasiKreditEmas .button-group {
+    margin-top: 20px;
+    display:flex; 
+    gap:8px;
+  }
+ 
+  #simulasiKreditEmas button {
+    background: var(--blue);
+    color:#fff;
+    border:0;
+    padding:12px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    font-size: 14px;
+    flex: 1;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; /* Ensure font consistency */
+    transition: background 0.3s;
+  }
+  #simulasiKreditEmas button:hover {
+    background: #002c8a;
+  }
 
-    * {
-      box-sizing: border-box;
-    }
+  #simulasiKreditEmas button.reset { 
+    background:#eef2ff; 
+    color:var(--blue); 
+    flex: 0.5;
+  }
+  #simulasiKreditEmas button.reset:hover {
+    background: #dce5ff;
+  }
+ 
+  #simulasiKreditEmas button.add {
+    width: 100%;
+    background: #1a9c40;
+  }
+  #simulasiKreditEmas button.add:hover {
+    background: #147a32;
+  }
+ 
+  #simulasiKreditEmas #sim-keranjangList ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #simulasiKreditEmas #sim-keranjangList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 14px;
+  }
+  #simulasiKreditEmas #sim-keranjangList li:last-child {
+    border-bottom: 0;
+  }
+ 
+  #simulasiKreditEmas #sim-keranjangList .remove-item {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  max-width: 24px; 
+  min-height: 24px;
+  max-height: 24px;
+  padding: 0 !important;       
+  border: none !important;       
+  box-sizing: border-box !important; 
+  border-radius: 50%;
+  flex-shrink: 0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1; 
+  background: #e0e0e0;
+  color: #222;
+  font-weight: bold;
+  font-size: 16px;
+  }
+  #simulasiKreditEmas #sim-keranjangList .remove-item:hover {
+    background: #f44336;
+    color: #fff;
+  }
+ 
+  #simulasiKreditEmas #sim-totalKeranjang {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid var(--blue);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--blue);
+  }
 
-    body {
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      margin: 0;
-    }
+  #simulasiKreditEmas .result-hero {
+    background: #eef2ff;
+    border: 1px solid #cddcff;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  #simulasiKreditEmas .result-hero.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  #simulasiKreditEmas .result-hero.primary .label {
+    color: #cddcff;
+  }
+  #simulasiKreditEmas .result-hero.primary .val-hero {
+    color: #fff;
+  }
+ 
+  #simulasiKreditEmas .result-hero .label {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  #simulasiKreditEmas .result-hero .val-hero {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+ 
+  #simulasiKreditEmas .details-heading {
+    font-size: 16px;
+    color: #333;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 6px;
+  }
+ 
+  #simulasiKreditEmas .result-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
 
-    #simulasiKreditEmas {
-      background: var(--bg);
-      margin: 0;
-      color: #111;
-      padding: 1px 0;
-    }
+  #simulasiKreditEmas .item { 
+    background:#f8f9ff; 
+    border: 1px solid #eef2ff;
+    border-radius:8px; 
+    padding:12px; 
+  }
+  #simulasiKreditEmas .item .label { 
+    font-size:12px; 
+    color:var(--muted); 
+  }
+  #simulasiKreditEmas .item .val { 
+    font-size:16px; 
+    font-weight:700; 
+    color:var(--blue); 
+  }
+ 
+  #simulasiKreditEmas .btn-whatsapp {
+    display: block; 
+    background: #25D366;
+    color: #fff !important;
+    padding: 14px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 20px;
+    transition: background 0.3s;
+  }
+  #simulasiKreditEmas .btn-whatsapp:hover {
+    background: #128C7E;
+    color: #fff !important;
+  }
+ 
+  #simulasiKreditEmas .table-wrapper {
+    overflow-x: auto;
+    margin-top: 16px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+  }
+ 
+  #simulasiKreditEmas table { 
+    width:100%; 
+    border-collapse:collapse; 
+    font-size:14px; 
+  }
+  #simulasiKreditEmas th, 
+  #simulasiKreditEmas td { 
+    padding: 10px 12px; 
+    border-bottom:1px solid #eee; 
+    text-align:left; 
+    white-space: nowrap;
+  }
+  #simulasiKreditEmas th { 
+    background:#f8f9ff; 
+    color:var(--blue); 
+    font-weight: 600;
+  }
+  #simulasiKreditEmas tbody tr:last-child td {
+    border-bottom: 0;
+  }
+ 
+  #simulasiKreditEmas .small-note { 
+    font-size:13px; 
+    color:#777; 
+    margin-top:16px; 
+    line-height: 1.5;
+  }
 
-    #simulasiKreditEmas header {
-      background: var(--blue);
-      color: #fff;
-      padding: 18px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    #simulasiKreditEmas header h1 {
-      font-size: 20px;
-      margin: 0;
-      color: #fff;
-      padding: 0;
-      border: 0;
-    }
-
-    #simulasiKreditEmas .container {
-      max-width: 1100px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-
-    #simulasiKreditEmas .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-
-    #simulasiKreditEmas .card {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-      padding: 20px;
-    }
-
-    #simulasiKreditEmas .form-group {
-      margin-bottom: 14px;
-    }
-
-    #simulasiKreditEmas .form-group-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    #simulasiKreditEmas .form-group-row>div:first-child {
-      flex: 3;
-    }
-
-    #simulasiKreditEmas .form-group-row>div:last-child {
-      flex: 1;
-    }
-
-    #simulasiKreditEmas label {
-      display: block;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    #simulasiKreditEmas select,
-    #simulasiKreditEmas input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-      background: #fff;
-    }
-
-    #simulasiKreditEmas input:disabled {
-      background: #f9f9f9;
-      color: #555;
-    }
-
-    #simulasiKreditEmas .button-group {
-      margin-top: 20px;
-      display: flex;
-      gap: 8px;
-    }
-
-    #simulasiKreditEmas button {
-      background: var(--blue);
-      color: #fff;
-      border: 0;
-      padding: 12px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      flex: 1;
-    }
-
-    #simulasiKreditEmas button.reset {
-      background: #eef2ff;
-      color: var(--blue);
-      flex: 0.5;
-    }
-
-    #simulasiKreditEmas button.add {
-      width: 100%;
-      background: #1a9c40;
-    }
-
-    #simulasiKreditEmas #sim-keranjangList ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #simulasiKreditEmas #sim-keranjangList li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px dashed #eee;
-      font-size: 14px;
-    }
-
-    #simulasiKreditEmas #sim-keranjangList li:last-child {
-      border-bottom: 0;
-    }
-
-    #simulasiKreditEmas #sim-keranjangList .remove-item {
-      width: 24px;
-      height: 24px;
-      min-width: 24px;
-      max-width: 24px;
-      min-height: 24px;
-      max-height: 24px;
-      padding: 0 !important;
-      border: none !important;
-      box-sizing: border-box !important;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      background: #e0e0e0;
-      color: #222;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    #simulasiKreditEmas #sim-totalKeranjang {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 2px solid var(--blue);
-      font-weight: 700;
-      font-size: 16px;
-      color: var(--blue);
-    }
-
-    #simulasiKreditEmas .result-hero {
-      background: #eef2ff;
-      border: 1px solid #cddcff;
-      border-radius: 8px;
-      padding: 16px;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    #simulasiKreditEmas .result-hero.primary {
-      background: var(--blue);
-      border-color: var(--blue);
-    }
-
-    #simulasiKreditEmas .result-hero.primary .label {
-      color: #cddcff;
-    }
-
-    #simulasiKreditEmas .result-hero.primary .val-hero {
-      color: #fff;
-    }
-
-    #simulasiKreditEmas .result-hero .label {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-
-    #simulasiKreditEmas .result-hero .val-hero {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--blue);
-    }
-
-    #simulasiKreditEmas .details-heading {
-      font-size: 16px;
-      color: #333;
-      margin-top: 24px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 6px;
-    }
-
+  /* Custom modal for alerts */
+  .alert-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: center;
+  }
+  .alert-modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 24px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  .alert-modal-content p {
+    font-size: 16px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  .alert-modal-close {
+    background: var(--blue);
+    color: #fff;
+    border: 0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+  }
+ 
+  @media(min-width: 500px) {
     #simulasiKreditEmas .result-details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 1fr 1fr 1fr;
     }
-
-    #simulasiKreditEmas .item {
-      background: #f8f9ff;
-      border: 1px solid #eef2ff;
-      border-radius: 8px;
-      padding: 12px;
+  }
+ 
+  @media(min-width: 768px) {
+    #simulasiKreditEmas .grid {
+      grid-template-columns: 380px 1fr;
     }
-
-    #simulasiKreditEmas .item .label {
-      font-size: 12px;
-      color: var(--muted);
+    #simulasiKreditEmas button {
+      flex: none;
     }
-
-    #simulasiKreditEmas .item .val {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--blue);
+    #simulasiKreditEmas button.reset {
+      flex: none;
     }
-
-    #simulasiKreditEmas .btn-whatsapp {
-      display: block;
-      background: #25D366;
-      color: #fff !important;
-      padding: 14px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 16px;
-      text-align: center;
-      margin-top: 20px;
-      transition: background 0.3s;
-    }
-
-    #simulasiKreditEmas .btn-whatsapp:hover {
-      background: #128C7E;
-      color: #fff !important;
-    }
-
-    #simulasiKreditEmas .table-wrapper {
-      overflow-x: auto;
-      margin-top: 16px;
-      border: 1px solid #eee;
-      border-radius: 8px;
-    }
-
-    #simulasiKreditEmas table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    #simulasiKreditEmas th,
-    #simulasiKreditEmas td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    #simulasiKreditEmas th {
-      background: #f8f9ff;
-      color: var(--blue);
-      font-weight: 600;
-    }
-
-    #simulasiKreditEmas tbody tr:last-child td {
-      border-bottom: 0;
-    }
-
-    #simulasiKreditEmas .small-note {
-      font-size: 13px;
-      color: #777;
-      margin-top: 16px;
-      line-height: 1.5;
-    }
-
-    @media(min-width: 500px) {
-      #simulasiKreditEmas .result-details-grid {
-        grid-template-columns: 1fr 1fr 1fr;
-      }
-    }
-
-    @media(min-width: 768px) {
-      #simulasiKreditEmas .grid {
-        grid-template-columns: 380px 1fr;
-      }
-
-      #simulasiKreditEmas button {
-        flex: none;
-      }
-
-      #simulasiKreditEmas button.reset {
-        flex: none;
-      }
-    }
+  }
   </style>
 </head>
-
 <body>
 
+  <!-- App Container -->
   <div id="simulasiKreditEmas">
-
+    
+    <!-- Header (Optional but good for context) -->
     <header>
-      <div style="font-weight:700;font-size:22px;">🏦</div>
-      <h1>Simulasi Kredit Emas (Flat Rate)</h1>
+      <h1>Simulasi Kredit Emas</h1>
     </header>
 
     <div class="container">
@@ -350,29 +389,45 @@
               <option value="perhiasan">Emas Perhiasan (DP 25%)</option>
             </select>
           </div>
-
+         
           <fieldset style="border:1px solid #ddd; border-radius:8px; padding:10px 14px;">
-            <legend style="font-size:13px; font-weight:500; color:var(--muted); padding:0 4px;">Pilih Kepingan Emas
-            </legend>
-            <div class="form-group-row">
-              <div>
-                <label>Berat</label>
+            <legend style="font-size:13px; font-weight:500; color:var(--muted); padding:0 4px;">Pilih Kepingan Emas</legend>
+            
+            <!-- Container for Batangan (Antam) weight selection -->
+            <div id="sim-batanganContainer">
+              <div class="form-group">
+                <label>Berat (Antam)</label>
                 <select id="sim-pilihBerat"></select>
               </div>
-              <div>
-                <label>Keping</label>
-                <input id="sim-pilihKeping" type="number" value="1" min="1">
+            </div>
+
+            <!-- Container for Perhiasan (Jewelry) manual input -->
+            <div id="sim-perhiasanContainer" style="display: none;">
+              <div class="form-group">
+                <label>Berat Manual (gr)</label>
+                <input id="sim-beratManual" type="number" placeholder="Contoh: 5.5" min="0">
+              </div>
+              <div class="form-group">
+                <label>Harga Manual per Gram (Rp)</label>
+                <input id="sim-hargaManual" type="text" placeholder="Masukkan harga per gram">
               </div>
             </div>
+
+            <!-- Keping/Quantity (Shared, always visible) -->
+            <div class="form-group">
+                <label>Keping</label>
+                <input id="sim-pilihKeping" type="number" value="1" min="1">
+            </div>
+
             <button id="sim-tambahBtn" class="add">+ Tambah</button>
           </fieldset>
-
+         
           <h4 style="margin-top:16px; margin-bottom:8px;">Keranjang Emas</h4>
           <div id="sim-keranjangList">
             <div class="small-note">Keranjang masih kosong.</div>
           </div>
           <div id="sim-totalKeranjang">Total Harga: Rp0</div>
-
+         
           <div class="form-group" style="margin-top:14px;">
             <label>Tenor (bulan)</label>
             <select id="sim-tenor"></select>
@@ -388,56 +443,33 @@
             <button class="reset" id="sim-resetBtn">Reset</button>
           </div>
 
-          <div class="small-note">Data harga diambil langsung dari <a
-              href="https://januar001.github.io/scrapper-emas/harga-emas.json" target="_blank">GALERI 24</a>.
-            <br>Perhitungan bunga flat: (Pokok + bunga total) ÷ tenor.</div>
+          <div class="small-note">Data harga diambil langsung dari <a href="https://budurandeltapurnama.com/harga-emas" target="_blank" rel="noopener noreferrer">GALERI 24</a>. <br>Perhitungan bunga flat: (Pokok + bunga total) ÷ tenor.</div>
         </div>
 
         <div class="card">
           <h3>Hasil Simulasi</h3>
-
+         
           <div class="result-hero primary">
             <div class="label">Estimasi Angsuran / Bulan</div>
             <div id="sim-outCicilan" class="val-hero">-</div>
           </div>
-
+         
           <div class="result-hero">
             <div class="label">Total Bayar Awal (DP + Admin)</div>
             <div id="sim-outTotalBayar" class="val-hero">-</div>
           </div>
-
+         
           <h4 class="details-heading">Rincian Perhitungan</h4>
           <div class="result-details-grid">
-            <div class="item">
-              <div class="label">Harga Jual</div>
-              <div id="sim-outHarga" class="val">-</div>
-            </div>
-            <div class="item">
-              <div class="label">Tenor</div>
-              <div id="sim-outTenor" class="val">-</div>
-            </div>
-            <div class="item">
-              <div class="label">DP</div>
-              <div id="sim-outDP" class="val">-</div>
-            </div>
-            <div class="item">
-              <div class="label">Plafon (Harga-DP)</div>
-              <div id="sim-outPlafon" class="val">-</div>
-            </div>
-            <div class="item">
-              <div class="label">Admin (1.5%)</div>
-              <div id="sim-outAdmin" class="val">-</div>
-            </div>
-            <div class="item">
-              <div class="label">Bunga Berlaku</div>
-              <div id="sim-outBunga" class="val">-</div>
-            </div>
-            <div class="item" hidden>
-              <div class="label">Total Bunga</div>
-              <div id="sim-outTotalBunga" class="val">-</div>
-            </div>
+            <div class="item"><div class="label">Harga Jual</div><div id="sim-outHarga" class="val">-</div></div>
+            <div class="item"><div class="label">Tenor</div><div id="sim-outTenor" class="val">-</div></div>
+            <div class="item"><div class="label">DP</div><div id="sim-outDP" class="val">-</div></div>
+            <div class="item"><div class="label">Plafon (Harga-DP)</div><div id="sim-outPlafon" class="val">-</div></div>
+            <div class="item"><div class="label">Admin (1.5%)</div><div id="sim-outAdmin" class="val">-</div></div>
+            <div class="item"><div class="label">Bunga Berlaku</div><div id="sim-outBunga" class="val">-</div></div>
+            <div class="item" style="display: none;"><div class="label">Total Bunga</div><div id="sim-outTotalBunga" class="val">-</div></div>
           </div>
-
+         
           <a href="#" id="sim-ajukanWA" class="btn-whatsapp" target="_blank" style="display:none; margin-top: 20px;">
             Ajukan Kredit Sekarang
           </a>
@@ -446,260 +478,478 @@
 
       <div class="card" style="margin-top:18px;">
         <h3>Daftar Harga Emas GALERI 24</h3>
+        <!-- Placeholder for update date -->
+        <p id="sim-updateDate">(Memuat data harga...)</p>
         <div class="table-wrapper">
           <table id="sim-tabelHarga">
-            <thead>
-              <tr>
-                <th>Berat (gr)</th>
-                <th>Harga Jual</th>
-                <th>Harga Buyback</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
+            <thead><tr><th>Berat (gr)</th><th>Harga Jual</th><th>Harga Buyback</th></tr></thead>
+            <tbody>
+              <!-- Data will be populated by JS -->
+            </tbody>
           </table>
         </div>
       </div>
     </div>
 
   </div>
+  
+  <!-- Custom Alert Modal -->
+  <div id="alertModal" class="alert-modal">
+    <div class="alert-modal-content">
+      <p id="alertModalMessage"></p>
+      <button id="alertModalClose" class="alert-modal-close">OK</button>
+    </div>
+  </div>
+
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
 
-      const url = "https://januar001.github.io/scrapper-emas/harga-emas.json";
+    // --- CONFIG ---
+    const url = "https://januar001.github.io/scrapper-emas/harga-emas.json";
+    // !!! GANTI DENGAN NOMOR ANDA (format 62, tanpa + atau 0) !!!
+    const nomorWA = '6281217710234'; 
+    const adminRate = 0.015; // 1.5%
+    const promoRate = 0.0095; // 0.95% (bukan 0.9%)
+    const longRate = 0.012; // 1.2%
+    const promoTenorMax = 36; // Tenor <= 36 bulan pakai promoRate
+    const dpBatangan = 0.20; // 20%
+    const dpPerhiasan = 0.25; // 25%
 
-      const tenorSel = document.getElementById('sim-tenor');
-      const tabelBody = document.querySelector('#sim-tabelHarga tbody');
-      const pilihBeratSel = document.getElementById('sim-pilihBerat');
-      const keranjangListDiv = document.getElementById('sim-keranjangList');
-      const totalKeranjangDiv = document.getElementById('sim-totalKeranjang');
-      const pilihKepingInput = document.getElementById('sim-pilihKeping');
-      const jenisSel = document.getElementById('sim-jenis');
-      const waBtn = document.getElementById('sim-ajukanWA');
+    // --- ELEMENT SELECTORS ---
+    const tenorSel = document.getElementById('sim-tenor');
+    const tabelBody = document.querySelector('#sim-tabelHarga tbody');
+    const pilihBeratSel = document.getElementById('sim-pilihBerat');
+    const keranjangListDiv = document.getElementById('sim-keranjangList');
+    const totalKeranjangDiv = document.getElementById('sim-totalKeranjang');
+    const pilihKepingInput = document.getElementById('sim-pilihKeping');
+    const jenisSel = document.getElementById('sim-jenis');
+    const waBtn = document.getElementById('sim-ajukanWA');
+    // const hargaManualContainer = document.getElementById('sim-hargaManualContainer'); // Old
+    const hargaManualInput = document.getElementById('sim-hargaManual');
+    const updateDateEl = document.getElementById('sim-updateDate');
+    const calcBtn = document.getElementById('sim-calcBtn');
+    const resetBtn = document.getElementById('sim-resetBtn');
+    const tambahBtn = document.getElementById('sim-tambahBtn');
+    
+    // --- NEW SELECTORS ---
+    const simBatanganContainer = document.getElementById('sim-batanganContainer');
+    const simPerhiasanContainer = document.getElementById('sim-perhiasanContainer');
+    const simBeratManual = document.getElementById('sim-beratManual');
+    // --- END NEW SELECTORS ---
 
-      // Output Elements
-      const outHarga = document.getElementById('sim-outHarga');
-      const outDP = document.getElementById('sim-outDP');
-      const outPlafon = document.getElementById('sim-outPlafon');
-      const outAdmin = document.getElementById('sim-outAdmin');
-      const outBunga = document.getElementById('sim-outBunga');
-      const outCicilan = document.getElementById('sim-outCicilan');
-      const outTotalBunga = document.getElementById('sim-outTotalBunga');
-      const outTotalBayar = document.getElementById('sim-outTotalBayar');
-      // === ELEMEN BARU UNTUK TENOR ===
-      const outTenor = document.getElementById('sim-outTenor');
-      // =================================
+    // Output Elements
+    const outHarga = document.getElementById('sim-outHarga');
+    const outDP = document.getElementById('sim-outDP');
+    const outPlafon = document.getElementById('sim-outPlafon');
+    const outAdmin = document.getElementById('sim-outAdmin');
+    const outBunga = document.getElementById('sim-outBunga');
+    const outCicilan = document.getElementById('sim-outCicilan');
+    const outTotalBunga = document.getElementById('sim-outTotalBunga');
+    const outTotalBayar = document.getElementById('sim-outTotalBayar');
+    const outTenor = document.getElementById('sim-outTenor');
+    
+    // Modal Elements
+    const alertModal = document.getElementById('alertModal');
+    const alertModalMessage = document.getElementById('alertModalMessage');
+    const alertModalClose = document.getElementById('alertModalClose');
 
-      let masterHarga = {};
-      let keranjang = [];
-      let totalHargaKeranjang = 0;
+    // --- APP STATE ---
+    let masterHarga = {}; 
+    let keranjang = []; 
+    let totalHargaKeranjang = 0;
 
-      if (tenorSel && tenorSel.options.length === 0) {
-        for (let i = 1; i <= 60; i++) {
+    // --- HELPER FUNCTIONS ---
+
+    /**
+     * Shows a custom modal alert.
+     * @param {string} message - The message to display.
+     */
+    function showCustomAlert(message) {
+      if (alertModalMessage) alertModalMessage.textContent = message;
+      if (alertModal) alertModal.style.display = 'flex';
+    }
+
+    // Close modal
+    if (alertModalClose) {
+      alertModalClose.onclick = () => { 
+        if (alertModal) alertModal.style.display = 'none';
+      };
+    }
+    if (alertModal) {
+      alertModal.onclick = function(event) {
+        if (event.target == alertModal) {
+          alertModal.style.display = "none";
+        }
+      }
+    }
+
+    /**
+     * Parses a formatted currency string to a number.
+     * @param {string} s - The currency string (e.g., "Rp1.000.000").
+     * @returns {number} - The parsed number.
+     */
+    function parseRp(s){ return Number(String(s).replace(/[^0-9]/g,"")); }
+
+    /**
+     * Formats a number into Indonesian Rupiah currency string.
+     * @param {number} n - The number to format.
+     * @returns {string} - The formatted string (e.g., "Rp1.000.000").
+     */
+    function formatRp(n){ return 'Rp' + Math.round(n).toLocaleString('id-ID'); } 
+
+    /**
+     * Formats a date object into a readable Indonesian string.
+     * @param {Date} date - The date object.
+     * @returns {string} - Formatted date string.
+     */
+    function formatUpdateDate(date) {
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      return `(Update ${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()})`;
+    }
+
+    // --- INITIALIZATION ---
+
+    /**
+     * Populates the tenor dropdown menu.
+     */
+    function initTenor() {
+      if (tenorSel && tenorSel.options.length === 0) { 
+        for(let i = 1; i <= 60; i++){
           const opt = document.createElement('option');
-          opt.value = i;
+          opt.value = i; 
           opt.textContent = i + " bulan";
+          if (i === 12) opt.selected = true; // Default to 12 months
           tenorSel.appendChild(opt);
         }
       }
+    }
 
-      function parseRp(s) { return Number(String(s).replace(/[^0-9]/g, "")); }
-      function formatRp(n) { return 'Rp' + Math.round(n).toLocaleString('id-ID'); }
+    /**
+     * Fetches gold price data and populates the UI.
+     */
+    function fetchHargaEmas() {
+      if (Object.keys(masterHarga).length > 0) return; // Already fetched
 
-      if (Object.keys(masterHarga).length === 0) {
-        fetch(url)
-          .then(res => res.json())
-          .then(data => {
-            if (!data.daftar_harga) return;
-
-            data.daftar_harga.forEach(item => {
-              const beratStr = item.berat + ' gr';
-              const harga = parseRp(item.harga_jual);
-
-              masterHarga[beratStr] = harga;
-
-              const opt = document.createElement('option');
-              opt.value = beratStr;
-              opt.textContent = `${beratStr} — ${item.harga_jual}`;
-              if (pilihBeratSel) pilihBeratSel.appendChild(opt);
-
-              const tr = document.createElement('tr');
-              tr.innerHTML = `<td>${item.berat} gr</td><td>${item.harga_jual}</td><td>${item.harga_buyback}</td>`;
-              if (tabelBody) tabelBody.appendChild(tr);
-            });
-          })
-          .catch(err => {
-            console.error("Gagal mengambil data harga emas:", err);
-            if (keranjangListDiv) keranjangListDiv.innerHTML = `<div class="small-note" style="color:red;">Gagal mengambil data harga.</div>`;
-          });
-      }
-
-      function renderKeranjang() {
-        if (!keranjangListDiv) return;
-
-        keranjangListDiv.innerHTML = '';
-        totalHargaKeranjang = 0;
-
-        if (keranjang.length === 0) {
-          keranjangListDiv.innerHTML = '<div class="small-note">Keranjang masih kosong.</div>';
-          totalKeranjangDiv.textContent = 'Total Harga: Rp0';
-          return;
+      fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
+        return res.json();
+      })
+      .then(data => {
+        if (!data.daftar_harga) {
+          throw new Error("Invalid data structure from API.");
+        }
+        
+        // Populate price table and dropdown
+        data.daftar_harga.forEach(item => {
+          const beratStr = item.berat + ' gr';
+          const harga = parseRp(item.harga_jual);
+          
+          masterHarga[beratStr] = harga;
+          
+          if (pilihBeratSel) {
+            const opt = document.createElement('option');
+            opt.value = beratStr;
+            opt.textContent = `${beratStr} — ${item.harga_jual}`;
+            pilihBeratSel.appendChild(opt);
+          }
 
-        const ul = document.createElement('ul');
-        keranjang.forEach((item, index) => {
-          const li = document.createElement('li');
-          const subtotal = item.harga * item.keping;
-          totalHargaKeranjang += subtotal;
-
-          li.innerHTML = `
-        <span>
-          <strong>${item.berat}</strong> x ${item.keping} keping
-          <br>
-          <span class="small-note">${formatRp(subtotal)}</span>
-        </span>
-        <button class="remove-item" data-index="${index}" title="Hapus item">&times;</button>
-      `;
-          ul.appendChild(li);
+          if (tabelBody) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${item.berat} gr</td><td>${item.harga_jual}</td><td>${item.harga_buyback}</td>`;
+            tabelBody.appendChild(tr);
+          }
         });
 
-        keranjangListDiv.appendChild(ul);
-        totalKeranjangDiv.textContent = 'Total Harga: ' + formatRp(totalHargaKeranjang);
+        // Update date timestamp
+        if (updateDateEl) {
+          // Assuming the data doesn't provide a timestamp, use client's time
+          // If data.timestamp exists, parse it: new Date(data.timestamp)
+          updateDateEl.textContent = formatUpdateDate(new Date()); 
+        }
+      })
+      .catch(err => {
+        console.error("Gagal mengambil data harga emas:", err);
+        if (updateDateEl) updateDateEl.textContent = `(Gagal memuat data harga: ${err.message})`;
+        if (updateDateEl) updateDateEl.style.color = 'red';
+      });
+    }
+
+    // --- EVENT HANDLERS ---
+
+    /**
+     * Handles changes to the product type dropdown.
+     */
+    function handleJenisChange() {
+      if (!simBatanganContainer || !simPerhiasanContainer || !hargaManualInput || !simBeratManual) return;
+      
+      if (this.value === 'perhiasan') {
+        simBatanganContainer.style.display = 'none';
+        simPerhiasanContainer.style.display = 'block';
+      } else { // 'batangan'
+        simBatanganContainer.style.display = 'block';
+        simPerhiasanContainer.style.display = 'none';
+        // Clear manual inputs when switching back
+        hargaManualInput.value = '';
+        simBeratManual.value = '';
       }
+    }
+    
+    /**
+     * Renders the gold cart UI from the 'keranjang' state.
+     */
+    function renderKeranjang() {
+      if (!keranjangListDiv || !totalKeranjangDiv) return;
+      
+      keranjangListDiv.innerHTML = ''; 
+      totalHargaKeranjang = 0;
 
-      document.getElementById('sim-tambahBtn').onclick = () => {
-        const berat = pilihBeratSel.value;
-        const keping = parseInt(pilihKepingInput.value);
-        const harga = masterHarga[berat];
+      if (keranjang.length === 0) {
+        keranjangListDiv.innerHTML = '<div class="small-note">Keranjang masih kosong.</div>';
+        totalKeranjangDiv.textContent = 'Total Harga: Rp0';
+        return;
+      }
+      
+      const ul = document.createElement('ul');
+      keranjang.forEach((item, index) => {
+        const subtotal = item.harga * item.keping;
+        totalHargaKeranjang += subtotal;
+        
+        const li = document.createElement('li'); // Create li element
+        li.innerHTML = `
+          <span>
+            <strong>${item.berat}</strong> x ${item.keping} keping
+            <br>
+            <span class="small-note" style="color: #555;">${formatRp(subtotal)}</span>
+          </span>
+          <button class="remove-item" data-index="${index}" title="Hapus item">&times;</button>
+        `;
+        ul.appendChild(li);
+      });
+      
+      keranjangListDiv.appendChild(ul);
+      totalKeranjangDiv.textContent = 'Total Harga: ' + formatRp(totalHargaKeranjang);
+    }
 
-        if (!harga || keping < 1) return;
-
-        const existingItem = keranjang.find(item => item.berat === berat);
-        if (existingItem) {
-          existingItem.keping += keping;
-        } else {
-          keranjang.push({ berat, keping, harga });
-        }
-
-        renderKeranjang();
-        pilihKepingInput.value = 1;
-      };
-
-      keranjangListDiv.onclick = (e) => {
-        if (e.target.classList.contains('remove-item')) {
-          const index = parseInt(e.target.dataset.index);
-          keranjang.splice(index, 1);
-          renderKeranjang();
-        }
-      };
-
-      function hitung() {
-        const harga = totalHargaKeranjang;
-
-        if (harga === 0) {
-          alert("Keranjang Emas masih kosong. Silakan tambahkan item terlebih dahulu.");
+    /**
+     * Adds an item to the cart.
+     */
+    function tambahKeKeranjang() {
+      if (!jenisSel || !pilihKepingInput || !pilihBeratSel || !hargaManualInput || !simBeratManual) return;
+      
+      const jenis = jenisSel.value;
+      const keping = parseInt(pilihKepingInput.value);
+      
+      let berat, harga;
+      
+      if (jenis === 'batangan') {
+        berat = pilihBeratSel.value;
+        if (!berat) {
+          showCustomAlert("Silakan pilih berat emas batangan.");
           return;
         }
-
-        const jenis = jenisSel.value;
-        const tenor = parseInt(tenorSel.value);
-
-        const promo = 0.0095; // 0.9%
-        const long = 0.012; // 1.2%
-
-        const dpPersen = (jenis === "batangan") ? 0.20 : 0.25;
-        const rate = (tenor <= 36) ? promo : long;
-
-        const dp = harga * dpPersen;
-        const plafon = harga - dp;
-        const admin = plafon * 0.015;
-        const totalBunga = plafon * rate * tenor;
-
-        const totalPokokBunga = plafon + totalBunga;
-        const cicilan = totalPokokBunga / tenor;
-
-        const totalBayar = dp + admin;
-
-        // Tampilkan hasil
-        outHarga.textContent = formatRp(harga);
-        // === TAMPILKAN TENOR DI SINI ===
-        outTenor.textContent = tenor + " bulan";
-        // ===============================
-        outDP.textContent = formatRp(dp);
-        outPlafon.textContent = formatRp(plafon);
-        outAdmin.textContent = formatRp(admin);
-        outBunga.textContent = (rate * 100).toFixed(2) + "%/bln";
-        outTotalBunga.textContent = formatRp(totalBunga);
-        outCicilan.textContent = formatRp(cicilan);
-        outTotalBayar.textContent = formatRp(totalBayar);
-
-        // !!! GANTI DENGAN NOMOR ANDA (format 62, tanpa + atau 0) !!!
-        const nomorWA = '62895336782517';
-
-        let rincianBarang = '';
-        if (keranjang.length > 0) {
-          keranjang.forEach(item => {
-            rincianBarang += `\n- ${item.berat} (${item.keping} keping)`;
-          });
-        } else {
-          rincianBarang = '\n- (Keranjang kosong)';
+        harga = masterHarga[berat];
+      } else {
+        // --- NEW PERHIASAN LOGIC ---
+        const beratManualVal = parseFloat(simBeratManual.value);
+        if (!beratManualVal || beratManualVal <= 0) {
+          showCustomAlert("Silakan masukkan berat manual yang valid (lebih dari 0).");
+          return;
         }
+        berat = simBeratManual.value + ' gr'; // Use the manual weight
+        
+        const hargaManualPerGram = parseRp(hargaManualInput.value);
+        if (!hargaManualPerGram || hargaManualPerGram === 0) {
+        // --- END NEW PERHIASAN LOGIC ---
+          showCustomAlert("Silakan masukkan harga manual per gram."); // Diubah
+          return;
+        }
+        // Kalikan berat dengan harga per gram untuk dapat total harga
+        harga = beratManualVal * hargaManualPerGram;
+      }
 
-        const templatePesan = `
+      if (!harga || keping < 1) {
+        showCustomAlert("Pastikan harga dan jumlah keping valid (minimal 1).");
+        return;
+      }
+
+      const existingItem = keranjang.find(item => item.berat === berat && item.harga === harga);
+      if (existingItem) {
+        existingItem.keping += keping;
+      } else {
+        keranjang.push({ berat, keping, harga });
+      }
+      
+      renderKeranjang();
+      
+      // Reset inputs
+      pilihKepingInput.value = 1;
+      if (jenis === 'perhiasan') {
+        hargaManualInput.value = '';
+        simBeratManual.value = ''; // <-- ADD THIS RESET
+      }
+    }
+
+    /**
+     * Removes an item from the cart.
+     * @param {Event} e - The click event.
+     */
+    function hapusDariKeranjang(e) {
+      if (e.target.classList.contains('remove-item')) {
+        const index = parseInt(e.target.dataset.index);
+        keranjang.splice(index, 1); 
+        renderKeranjang();
+      }
+    }
+    
+    /**
+     * Calculates and displays the simulation results.
+     */
+    function hitung() {
+      const harga = totalHargaKeranjang; 
+
+      if (harga === 0) {
+        showCustomAlert("Keranjang Emas masih kosong. Silakan tambahkan item terlebih dahulu.");
+        return;
+      }
+      
+      const jenis = jenisSel.value;
+      const tenor = parseInt(tenorSel.value);
+      
+      const dpPersen = (jenis === "batangan") ? dpBatangan : dpPerhiasan;
+      const rate = (tenor <= promoTenorMax) ? promoRate : longRate;
+
+      const dp = harga * dpPersen;
+      const plafon = harga - dp;
+      const admin = plafon * adminRate;
+      const totalBunga = plafon * rate * tenor;
+      
+      const totalPokokBunga = plafon + totalBunga;
+      const cicilan = totalPokokBunga / tenor;
+      
+      const totalBayar = dp + admin;
+
+      // Tampilkan hasil
+      if (outHarga) outHarga.textContent = formatRp(harga);
+      if (outTenor) outTenor.textContent = tenor + " bulan";
+      if (outDP) outDP.textContent = formatRp(dp);
+      if (outPlafon) outPlafon.textContent = formatRp(plafon);
+      if (outAdmin) outAdmin.textContent = formatRp(admin);
+      if (outBunga) outBunga.textContent = (rate * 100).toFixed(2) + "%/bln";
+      if (outTotalBunga) outTotalBunga.textContent = formatRp(totalBunga);
+      if (outCicilan) outCicilan.textContent = formatRp(cicilan);
+      if (outTotalBayar) outTotalBayar.textContent = formatRp(totalBayar);
+      
+      // Generate WhatsApp link
+      // MODIFIED: Passed 'jenis' and 'dpPersen' to the function
+      generateWALink(harga, tenor, dp, plafon, admin, rate, totalBayar, cicilan, jenis, dpPersen);
+    }
+    
+    /**
+     * Generates the WhatsApp message and displays the button.
+     */
+    // MODIFIED: Added 'jenis' and 'dpPersen' to the function signature
+    function generateWALink(harga, tenor, dp, plafon, admin, rate, totalBayar, cicilan, jenis, dpPersen) {
+      let rincianBarang = '';
+      if (keranjang.length > 0) {
+          keranjang.forEach(item => {
+              rincianBarang += `\n- ${item.berat} (${item.keping} keping)`;
+          });
+      } else {
+          rincianBarang = '\n- (Keranjang kosong)';
+      }
+
+      // --- NEW LOGIC ---
+      const namaProduk = jenis === 'batangan' ? 'Emas Batangan' : 'Emas Perhiasan';
+      const dpLabel = `DP (${(dpPersen * 100).toFixed(0)}%)`;
+      // --- END NEW LOGIC ---
+
+      const templatePesan = `
 Halo, saya tertarik untuk mengajukan kredit emas dengan rincian sbb:
 
+*Jenis Produk:* ${namaProduk}
 *Barang:*
 ${rincianBarang.trim()}
 
 *--- Rincian Simulasi ---*
-*Total Harga:* ${outHarga.textContent}
+*Total Harga:* ${formatRp(harga)}
 *Tenor:* ${tenor} bulan
-*DP:* ${outDP.textContent}
-*Plafon:* ${outPlafon.textContent}
-*Admin (1.5%):* ${outAdmin.textContent}
-*Bunga Berlaku:* ${outBunga.textContent}
+*${dpLabel}:* ${formatRp(dp)}
+*Plafon:* ${formatRp(plafon)}
+*Admin (${(adminRate * 100).toFixed(1)}%):* ${formatRp(admin)}
+*Bunga Berlaku:* ${(rate * 100).toFixed(2)}%/bln
 
 *--- Rincian Pembayaran ---*
-*Total Bayar Awal (DP + Admin):* ${outTotalBayar.textContent}
-*Angsuran per Bulan:* ${outCicilan.textContent}
+*Total Bayar Awal (DP + Admin):* ${formatRp(totalBayar)}
+*Angsuran per Bulan:* ${formatRp(cicilan)}
 
 Mohon informasi lebih lanjut untuk proses pengajuan. Terima kasih.
-    `;
+      `;
 
-        const urlWA = `https://wa.me/${nomorWA}?text=${encodeURIComponent(templatePesan.trim())}`;
-
+      const urlWA = `https://wa.me/${nomorWA}?text=${encodeURIComponent(templatePesan.trim())}`;
+      
+      if (waBtn) {
         waBtn.href = urlWA;
-        waBtn.style.display = 'block';
+        waBtn.style.display = 'block'; 
       }
-
-      document.getElementById('sim-calcBtn').onclick = hitung;
-
-      document.getElementById('sim-resetBtn').onclick = () => {
-        keranjang = [];
-        renderKeranjang();
-
-        // Reset manual output
-        outHarga.textContent = '-';
-        outDP.textContent = '-';
-        outPlafon.textContent = '-';
-        outAdmin.textContent = '-';
-        outBunga.textContent = '-';
-        outTotalBunga.textContent = '-';
-        // === RESET TENOR JUGA ===
-        outTenor.textContent = '-';
-        // ==========================
-        outCicilan.textContent = '-';
-        outTotalBayar.textContent = '-';
-
+    }
+    
+    /**
+     * Resets the entire calculator form and state.
+     */
+    function resetForm() {
+      keranjang = [];
+      renderKeranjang();
+      
+      // Reset manual output
+      if (outHarga) outHarga.textContent = '-';
+      if (outDP) outDP.textContent = '-';
+      if (outPlafon) outPlafon.textContent = '-';
+      if (outAdmin) outAdmin.textContent = '-';
+      if (outBunga) outBunga.textContent = '-';
+      if (outTotalBunga) outTotalBunga.textContent = '-';
+      if (outTenor) outTenor.textContent = '-';
+      if (outCicilan) outCicilan.textContent = '-';
+      if (outTotalBayar) outTotalBayar.textContent = '-';
+      
+      if (waBtn) {
         waBtn.style.display = 'none';
         waBtn.href = '#';
+      }
+      
+      if (jenisSel) jenisSel.value = 'batangan';
+      if (tenorSel) tenorSel.value = '12'; // Default to 12
+      if (pilihKepingInput) pilihKepingInput.value = '1';
+      // if (pilihBeratSel) pilihBeratSel.disabled = false; // Old
+      // if (hargaManualContainer) hargaManualContainer.style.display = 'none'; // Old
+      if (hargaManualInput) hargaManualInput.value = '';
 
-        jenisSel.value = 'batangan';
-        tenorSel.value = '1';
-      };
+      // --- NEW RESET LOGIC ---
+      if (simBeratManual) simBeratManual.value = '';
+      if (simBatanganContainer) simBatanganContainer.style.display = 'block';
+      if (simPerhiasanContainer) simPerhiasanContainer.style.display = 'none';
+      // --- END NEW RESET LOGIC ---
+    }
 
-    }); 
+    // --- ATTACH EVENT LISTENERS ---
+    if (jenisSel) jenisSel.addEventListener('change', handleJenisChange);
+    if (tambahBtn) tambahBtn.addEventListener('click', tambahKeKeranjang);
+    if (keranjangListDiv) keranjangListDiv.addEventListener('click', hapusDariKeranjang);
+    if (calcBtn) calcBtn.addEventListener('click', hitung);
+    if (resetBtn) resetBtn.addEventListener('click', resetForm);
+    
+    // --- RUN INITIALIZATION ---
+    initTenor();
+    fetchHargaEmas();
+    
+  }); 
   </script>
 
 </body>
-
 </html>
+
+
+
