@@ -38,5 +38,10 @@
     "tanggal": "2025-10-30",
     "harga_jual": 2393000,
     "harga_buyback": 2234000
+  },
+  {
+    "tanggal": "2025-10-31",
+    "harga_jual": 2391000,
+    "harga_buyback": 2232000
   }
 ]
