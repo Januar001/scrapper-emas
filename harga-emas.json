@@ -1,62 +1,62 @@
 {
   "sumber": "GALERI 24",
   "diperbarui": "Diperbarui Rabu, 10 Desember 2025",
-  "waktu_scraping": "2025-12-10T03:17:43.984Z",
+  "waktu_scraping": "2025-12-10T04:28:28.461Z",
   "daftar_harga": [
     {
       "berat": "0.5",
-      "harga_jual": "Rp1.277.000",
-      "harga_buyback": "Rp1.136.000"
+      "harga_jual": "Rp1.283.000",
+      "harga_buyback": "Rp1.142.000"
     },
     {
       "berat": "1",
-      "harga_jual": "Rp2.434.000",
-      "harga_buyback": "Rp2.273.000"
+      "harga_jual": "Rp2.446.000",
+      "harga_buyback": "Rp2.284.000"
     },
     {
       "berat": "2",
-      "harga_jual": "Rp4.795.000",
-      "harga_buyback": "Rp4.547.000"
+      "harga_jual": "Rp4.819.000",
+      "harga_buyback": "Rp4.569.000"
     },
     {
       "berat": "5",
-      "harga_jual": "Rp11.900.000",
-      "harga_buyback": "Rp11.367.000"
+      "harga_jual": "Rp11.959.000",
+      "harga_buyback": "Rp11.423.000"
     },
     {
       "berat": "10",
-      "harga_jual": "Rp23.736.000",
-      "harga_buyback": "Rp22.735.000"
+      "harga_jual": "Rp23.853.000",
+      "harga_buyback": "Rp22.847.000"
     },
     {
       "berat": "25",
-      "harga_jual": "Rp59.196.000",
-      "harga_buyback": "Rp56.560.000"
+      "harga_jual": "Rp59.487.000",
+      "harga_buyback": "Rp56.839.000"
     },
     {
       "berat": "50",
-      "harga_jual": "Rp118.298.000",
-      "harga_buyback": "Rp113.121.000"
+      "harga_jual": "Rp118.881.000",
+      "harga_buyback": "Rp113.679.000"
     },
     {
       "berat": "100",
-      "harga_jual": "Rp236.479.000",
-      "harga_buyback": "Rp226.243.000"
+      "harga_jual": "Rp237.644.000",
+      "harga_buyback": "Rp227.359.000"
     },
     {
       "berat": "250",
-      "harga_jual": "Rp587.439.000",
-      "harga_buyback": "Rp562.821.000"
+      "harga_jual": "Rp590.332.000",
+      "harga_buyback": "Rp565.599.000"
     },
     {
       "berat": "500",
-      "harga_jual": "Rp1.174.877.000",
-      "harga_buyback": "Rp1.125.643.000"
+      "harga_jual": "Rp1.180.662.000",
+      "harga_buyback": "Rp1.131.198.000"
     },
     {
       "berat": "1000",
-      "harga_jual": "Rp2.349.754.000",
-      "harga_buyback": "Rp2.251.287.000"
+      "harga_jual": "Rp2.361.324.000",
+      "harga_buyback": "Rp2.262.397.000"
     }
   ]
 }
