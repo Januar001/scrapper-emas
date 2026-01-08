@@ -383,5 +383,10 @@
     "tanggal": "2026-01-07",
     "harga_jual": 2582000,
     "harga_buyback": 2421000
+  },
+  {
+    "tanggal": "2026-01-08",
+    "harga_jual": 2599000,
+    "harga_buyback": 2436000
   }
 ]
