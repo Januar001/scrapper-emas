@@ -28,19 +28,31 @@ async function ambilHargaEmas() {
       const weight = $(columns[0]).text().trim();
       const sellPrice = $(columns[1]).text().trim();
       const buybackPrice = $(columns[2]).text().trim();
-      prices.push({
-        berat: weight,
-        harga_jual: sellPrice,
-        harga_buyback: buybackPrice,
-      });
+      
+      if (weight) {
+        prices.push({
+          berat: weight,
+          harga_jual: sellPrice,
+          harga_buyback: buybackPrice,
+        });
+      }
     });
 
-    const waktuScraping = new Date().toISOString();
+    // Perbaikan Timezone: Menggunakan waktu lokal server (bukan UTC)
+    const waktuSekarang = new Date();
+    const tahun = waktuSekarang.getFullYear();
+    const bulan = String(waktuSekarang.getMonth() + 1).padStart(2, '0');
+    const tanggal = String(waktuSekarang.getDate()).padStart(2, '0');
+    
+    // Format YYYY-MM-DD
+    const tanggalLokal = `${tahun}-${bulan}-${tanggal}`; 
+    const waktuScraping = `${tanggalLokal}T${waktuSekarang.toTimeString().split(' ')[0]}`;
 
     const result = {
       sumber: 'GALERI 24',
       diperbarui: lastUpdate,
       waktu_scraping: waktuScraping,
+      tanggal_hari_ini: tanggalLokal, // Tambahan untuk mempermudah histori
       daftar_harga: prices,
     };
     return result;
@@ -68,31 +80,54 @@ function updateHistori(dataHarga) {
     }
   }
 
-  // Ambil data penting dari scrape terbaru (item 1 gram)
-  const item_1_gram = dataHarga.daftar_harga[1]; // [0] = 0.5g, [1] = 1g
+  // Perbaikan: Cari dinamis berdasarkan nama "1 Gram", jangan hardcode index [1]
+  const item_1_gram = dataHarga.daftar_harga.find(item => 
+    item.berat.toLowerCase() === '1 gram' || 
+    item.berat.toLowerCase() === '1 gr' || 
+    item.berat === '1'
+  );
+
+  if (!item_1_gram) {
+    console.error('❌ Harga 1 Gram tidak ditemukan di data terbaru. Histori tidak diupdate.');
+    return;
+  }
   
   // Ubah "Rp1.234.000" menjadi 1234000
   const hargaJual = parseInt(item_1_gram.harga_jual.replace(/[^0-9]/g, ''));
   const hargaBuyback = parseInt(item_1_gram.harga_buyback.replace(/[^0-9]/g, ''));
   
-  const tanggalHariIni = dataHarga.waktu_scraping.split('T')[0];
+  const tanggalHariIni = dataHarga.tanggal_hari_ini;
   
-  const dataHariIniSudahAda = histori.some(entry => entry.tanggal === tanggalHariIni);
+  // Cari index data hari ini di histori
+  const indexHariIni = histori.findIndex(entry => entry.tanggal === tanggalHariIni);
 
-  // Cek juga apakah harganya valid (bukan 0)
-  if (!dataHariIniSudahAda && hargaJual > 0 && hargaBuyback > 0) {
+  // Cek apakah harganya valid (bukan 0 atau NaN)
+  if (hargaJual > 0 && hargaBuyback > 0) {
     
-    // INI BAGIAN KUNCINYA: Menyimpan harga_jual dan harga_buyback
-    histori.push({
+    const dataBaru = {
       tanggal: tanggalHariIni,
       harga_jual: hargaJual,
       harga_buyback: hargaBuyback
-    });
+    };
+
+    if (indexHariIni !== -1) {
+      // PERBAIKAN LOGIKA: Jika tanggal sudah ada, UPDATE dengan harga terbaru
+      if (histori[indexHariIni].harga_jual !== hargaJual || histori[indexHariIni].harga_buyback !== hargaBuyback) {
+        histori[indexHariIni] = dataBaru; // Menimpa harga lama di hari yang sama dengan harga baru
+        fs.writeFileSync(HISTORY_FILE, JSON.stringify(histori, null, 2));
+        console.log(`✅ Data histori grafik untuk ${tanggalHariIni} telah DIPERBARUI dengan harga terbaru.`);
+      } else {
+        console.log(`ℹ️ Harga masih sama seperti sebelumnya hari ini, tidak perlu ubah grafik.`);
+      }
+    } else {
+      // Jika belum ada, TAMBAHKAN data baru
+      histori.push(dataBaru);
+      fs.writeFileSync(HISTORY_FILE, JSON.stringify(histori, null, 2));
+      console.log(`✅ Data histori grafik baru untuk ${tanggalHariIni} telah ditambahkan.`);
+    }
     
-    fs.writeFileSync(HISTORY_FILE, JSON.stringify(histori, null, 2));
-    console.log(`✅ Data histori baru (jual & buyback) untuk ${tanggalHariIni} telah ditambahkan.`);
   } else {
-    console.log(`ℹ️ Data histori untuk ${tanggalHariIni} sudah ada atau data harga 0, tidak perlu update.`);
+    console.log(`❌ Data harga tidak valid, histori tidak diupdate.`);
   }
 }
 
@@ -102,16 +137,15 @@ function updateHistori(dataHarga) {
 async function jalankanDanSimpan() {
   const dataHarga = await ambilHargaEmas();
 
-  // Pastikan data ada dan punya lebih dari 1 item (0.5g dan 1g)
-  if (dataHarga && dataHarga.daftar_harga && dataHarga.daftar_harga.length > 1) {
+  if (dataHarga && dataHarga.daftar_harga && dataHarga.daftar_harga.length > 0) {
     fs.writeFileSync(LATEST_FILE, JSON.stringify(dataHarga, null, 2));
-    console.log(`✅ Data terbaru berhasil disimpan ke ${LATEST_FILE}`);
+    console.log(`✅ Data terbaru (tabel) berhasil disimpan ke ${LATEST_FILE}`);
     
     // Panggil fungsi update histori
     updateHistori(dataHarga);
 
   } else {
-    console.log('Gagal mengambil data atau data harga kosong, file tidak diupdate.');
+    console.log('❌ Gagal mengambil data atau data harga kosong, file tidak diupdate.');
   }
 }
 
