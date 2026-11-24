@@ -1983,5 +1983,10 @@
     "tanggal": "2026-11-23",
     "harga_jual": 2351000,
     "harga_buyback": 2210000
+  },
+  {
+    "tanggal": "2026-11-24",
+    "harga_jual": 2361000,
+    "harga_buyback": 2220000
   }
 ]
